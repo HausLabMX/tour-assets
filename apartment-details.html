@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de la Propiedad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #2563eb; 
+            --primary-dark: #1d4ed8;
+            --success: #22c55e; 
+            --danger: #ef4444; 
+            --warning: #f59e0b; 
+            --text: #1f2937; 
+        }
+        
+        body { font-family: 'Inter', sans-serif; margin: 0; background-color: transparent; color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        .card { 
+            background: white; width: 90%; max-width: 380px; border-radius: 20px; overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: none; animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .image-container { width: 100%; height: 220px; background-color: #eee; position: relative; }
+        #apt-image { width: 100%; height: 100%; object-fit: cover; }
+        
+        .status-badge { 
+            position: absolute; top: 15px; right: 15px; padding: 6px 14px; border-radius: 30px; 
+            font-size: 0.7rem; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .content { padding: 24px; }
+        .header h2 { margin: 0; font-size: 1.6rem; color: #111827; font-weight: 700; }
+        
+        .price { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin: 12px 0; letter-spacing: -0.5px; }
+
+        .specs { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0; 
+            padding: 15px 0; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; 
+        }
+        .spec-item { font-size: 0.8rem; color: #6b7280; }
+        .spec-item strong { display: block; color: #111827; font-size: 1rem; margin-top: 2px; }
+
+        .btn-pay { 
+            display: flex; align-items: center; justify-content: center; width: 100%; 
+            padding: 16px; border: none; border-radius: 12px; 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white; font-weight: 700; font-size: 1.1rem; text-align: center; 
+            text-decoration: none; box-sizing: border-box; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            position: relative; overflow: hidden;
+        }
+
+        .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
+        
+        /* Efecto Brillo del botón */
+        .btn-pay::after {
+            content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(to bottom right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(45deg); transition: 0.5s;
+        }
+        .btn-pay:hover::after { left: 100%; top: 100%; }
+
+        .btn-pay.disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; transform: none; box-shadow: none; pointer-events: none; }
+
+        #error-msg { color: var(--danger); text-align: center; display: none; padding: 30px; background: white; border-radius: 15px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="main-card">
+        <div class="image-container">
+            <img id="apt-image" src="" alt="Propiedad">
+            <div id="apt-status-badge" class="status-badge"></div>
+        </div>
+        <div class="content">
+            <div class="header">
+                <h2 id="apt-title">Cargando...</h2>
+                <p id="apt-project" style="color: #6b7280; margin: 4px 0; font-size: 0.9rem;"></p>
+            </div>
+            <div id="apt-price" class="price"></div>
+            <div class="specs">
+                <div class="spec-item"><strong>Área Total</strong><span id="apt-area"></span> m²</div>
+                <div class="spec-item"><strong>Recámaras</strong><span id="apt-beds"></span></div>
+                <div class="spec-item"><strong>Baños</strong><span id="apt-baths"></span></div>
+                <div class="spec-item"><strong>ID Unidad</strong><span id="apt-id-label"></span></div>
+            </div>
+            <a href="#" id="pay-button" class="btn-pay">Apartar Unidad</a>
+        </div>
+    </div>
+
+    <div id="error-msg">⚠️ Propiedad no encontrada o error de conexión.</div>
+
+    <script>
+        // --- CONFIGURACIÓN MAESTRA ---
+        const AIRTABLE_TOKEN = 'appCHPUOlD0TawvoJ'; // Reemplaza con tu token
+        const TABLE_NAME = 'Propiedades';
+
+        function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
+
+        async function init() {
+            const bid = getParam('base');    // ID de la Base de Airtable
+            const pid = getParam('project'); // ID del proyecto (opcional)
+            const aid = getParam('id');      // ID del departamento (obligatorio)
+
+            if (!bid || !aid) {
+                document.getElementById('error-msg').style.display = 'block';
+                document.getElementById('error-msg').textContent = "Faltan parámetros: base o id.";
+                return;
+            }
+
+            // Construcción del filtro para buscar en Airtable
+            const filter = pid 
+                ? `AND({project_id}='${pid}', {apartment_id}='${aid}')` 
+                : `{apartment_id}='${aid}'`;
+
+            const url = `https://api.airtable.com/v0/${bid}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(filter)}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` }
+                });
+                
+                const data = await response.json();
+                
+                if (!data.records || data.records.length === 0) throw new Error("Apt not found");
+
+                const apt = data.records[0].fields;
+
+                // Llenar la información en la tarjeta
+                document.getElementById('apt-title').textContent = `Unidad ${apt.apartment_id}`;
+                document.getElementById('apt-project').textContent = apt.project_name || pid;
+                document.getElementById('apt-area').textContent = apt.area_total || '0';
+                document.getElementById('apt-beds').textContent = apt.num_bedrooms || '0';
+                document.getElementById('apt-baths').textContent = apt.num_bathrooms || '0';
+                document.getElementById('apt-id-label').textContent = apt.apartment_id;
+
+                // Imagen desde el campo Attachment de Airtable
+                if (apt.image && apt.image.length > 0) {
+                    document.getElementById('apt-image').src = apt.image[0].url;
+                } else {
+                    document.getElementById('apt-image').src = 'https://via.placeholder.com/400x220?text=Sin+Imagen';
+                }
+
+                // Formatear Precio a Moneda Mexicana
+                document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { 
+                    style: 'currency', currency: 'MXN' 
+                }).format(apt.price || 0);
+
+                // Lógica de Estado y Botón de Pago
+                const badge = document.getElementById('apt-status-badge');
+                const payBtn = document.getElementById('pay-button');
+                
+                const currentStatus = apt.status; // Usando 'status'
+                badge.textContent = currentStatus;
+
+                if (currentStatus === 'Available') {
+                    badge.style.backgroundColor = 'var(--success)';
+                    payBtn.href = apt.payment_url || '#';
+                } else if (currentStatus === 'Reserved') {
+                    badge.style.backgroundColor = 'var(--warning)';
+                    payBtn.textContent = "Unidad Reservada";
+                    payBtn.classList.add('disabled');
+                } else {
+                    badge.style.backgroundColor = 'var(--danger)';
+                    payBtn.textContent = "No Disponible";
+                    payBtn.classList.add('disabled');
+                }
+
+                // Mostrar la tarjeta una vez cargada
+                document.getElementById('main-card').style.display = 'block';
+
+            } catch (err) {
+                document.getElementById('error-msg').style.display = 'block';
+                console.error("Error de carga:", err);
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
