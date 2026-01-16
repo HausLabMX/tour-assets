@@ -27,19 +27,33 @@
 
         .container { display: flex; height: 100%; width: 100%; }
 
-        /* --- COLUMNA IZQUIERDA (MEDIA: FOTOS O TOUR) --- */
+        /* --- COLUMNA IZQUIERDA (MEDIA) --- */
         .image-panel {
             width: 65%;
             background: var(--bg-light);
             position: relative;
             overflow: hidden;
+            /* Flexbox para asegurar que el contenido interno se expanda */
+            display: flex; 
+        }
+
+        /* CORRECCIÓN: El contenedor de fotos debe ocupar todo el espacio */
+        #photos-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
         }
 
         /* Imágenes */
         #carousel-img {
-            width: 100%; height: 100%;
-            object-fit: cover;
+            width: 100%; 
+            height: 100%;
+            /* 'cover' llena el espacio sin deformar. 
+               Si prefieres ver la foto entera con bordes vacíos, cambia a 'contain' */
+            object-fit: cover; 
+            object-position: center center; /* Asegura que el centro de la foto siempre se vea */
             transition: opacity 0.3s ease;
+            display: block;
         }
 
         /* Contenedor del Tour (Iframe) */
@@ -47,13 +61,13 @@
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             background: black;
-            z-index: 20; /* Por encima de las fotos */
-            display: none; /* Oculto por defecto */
+            z-index: 20; 
+            display: none; 
         }
 
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* Botón para cerrar el tour y volver a fotos */
+        /* Botón cerrar tour */
         .close-tour-btn {
             position: absolute; top: 20px; left: 20px;
             background: rgba(255, 255, 255, 0.9);
@@ -149,7 +163,7 @@
         
         <!-- LADO IZQUIERDO: MEDIA -->
         <div class="image-panel">
-            <!-- 1. Carrusel de Fotos -->
+            <!-- Corregido: Este contenedor ahora tiene width/height 100% -->
             <div id="photos-container">
                 <img id="carousel-img" src="" alt="Vista Departamento">
                 <div class="image-counter">
@@ -161,7 +175,7 @@
                 </div>
             </div>
 
-            <!-- 2. Contenedor del Tour (Iframe) -->
+            <!-- Tour Overlay -->
             <div id="tour-container" class="tour-overlay">
                 <button class="close-tour-btn" onclick="closeTour()">⬅ Back to Photos</button>
                 <iframe id="tour-frame" src=""></iframe>
@@ -185,8 +199,6 @@
 
             <div class="actions">
                 <a href="#" id="btn-pay" class="btn btn-primary" target="_blank">Reserve Unit</a>
-                
-                <!-- El botón ahora ejecuta una función JS en lugar de ser un link -->
                 <button id="btn-tour" class="btn btn-tour-style" style="display: none;">Virtual Tour 360°</button>
             </div>
         </div>
@@ -196,7 +208,6 @@
     <div id="error-msg" style="display:none; text-align:center; padding:50px;">Loading data...</div>
 
     <script>
-        // --- CONFIGURACIÓN ---
         const AIRTABLE_TOKEN = 'patLtwhe1uThg13Zi.a7a0336579f1cc184e29b7593bb98a41fdad9fe5f82e1d68923580c94c539716'; 
         const BASE_ID = 'appCHPUOlD0TawvoJ';
         const TABLE_NAME = 'Propiedades';
@@ -222,7 +233,6 @@
                 if (!data.records.length) throw new Error("No encontrado");
                 const apt = data.records[0].fields;
 
-                // Llenar datos
                 document.getElementById('apt-id').textContent = `Unit ${apt.apartment_id}`;
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
@@ -231,14 +241,12 @@
                 document.getElementById('apt-beds').textContent = apt.num_bedrooms;
                 document.getElementById('apt-baths').textContent = apt.num_bathrooms;
 
-                // Descripción
                 const descBox = document.getElementById('apt-description');
                 if (apt.description) {
                     descBox.textContent = apt.description;
                     descBox.style.display = 'block';
                 } else { descBox.style.display = 'none'; }
 
-                // Botones
                 const btnPay = document.getElementById('btn-pay');
                 const btnTour = document.getElementById('btn-tour');
 
@@ -251,14 +259,11 @@
                     btnPay.style.background = apt.status === 'Reserved' ? '#f59e0b' : '#ef4444';
                 }
 
-                // Lógica del Tour (Iframe)
                 if (apt.tour_url) {
                     btnTour.style.display = 'flex';
-                    // Al hacer click, llamamos a la función openTour con la URL
                     btnTour.onclick = function() { openTour(apt.tour_url); };
                 }
 
-                // Carrusel
                 if (apt.image && apt.image.length > 0) {
                     currentImages = apt.image;
                     updateCarousel(0);
@@ -275,28 +280,20 @@
             }
         }
 
-        // --- FUNCIONES DEL TOUR VIRTUAL (EMBEBIDO) ---
         function openTour(url) {
             const tourContainer = document.getElementById('tour-container');
             const tourFrame = document.getElementById('tour-frame');
-            
-            // Asignamos la URL al iframe
             tourFrame.src = url;
-            // Mostramos el contenedor (tapará el carrusel)
             tourContainer.style.display = 'block';
         }
 
         function closeTour() {
             const tourContainer = document.getElementById('tour-container');
             const tourFrame = document.getElementById('tour-frame');
-            
-            // Ocultamos el contenedor
             tourContainer.style.display = 'none';
-            // Limpiamos el SRC para detener la carga/audio del tour
             tourFrame.src = "";
         }
 
-        // --- FUNCIONES DEL CARRUSEL ---
         function changeImage(direction) {
             currentIndex += direction;
             if (currentIndex >= currentImages.length) currentIndex = 0;
