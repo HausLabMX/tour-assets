@@ -25,13 +25,9 @@
             overflow: hidden; 
         }
 
-        .container {
-            display: flex;
-            height: 100%;
-            width: 100%;
-        }
+        .container { display: flex; height: 100%; width: 100%; }
 
-        /* --- COLUMNA IZQUIERDA (FOTO) --- */
+        /* --- COLUMNA IZQUIERDA (MEDIA: FOTOS O TOUR) --- */
         .image-panel {
             width: 65%;
             background: var(--bg-light);
@@ -39,37 +35,53 @@
             overflow: hidden;
         }
 
+        /* Imágenes */
         #carousel-img {
             width: 100%; height: 100%;
             object-fit: cover;
             transition: opacity 0.3s ease;
         }
 
-        /* CAMBIO: FLECHAS CENTRADAS A LOS LADOS */
+        /* Contenedor del Tour (Iframe) */
+        .tour-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: black;
+            z-index: 20; /* Por encima de las fotos */
+            display: none; /* Oculto por defecto */
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* Botón para cerrar el tour y volver a fotos */
+        .close-tour-btn {
+            position: absolute; top: 20px; left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary);
+            border: none; padding: 10px 20px;
+            border-radius: 30px; font-weight: 700; font-size: 0.9rem;
+            cursor: pointer; z-index: 30;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 8px;
+            transition: transform 0.2s;
+        }
+        .close-tour-btn:hover { transform: scale(1.05); background: white; }
+
+        /* Navegación Carrusel */
         .carousel-nav {
-            position: absolute;
-            top: 50%; /* Centrar verticalmente */
-            left: 0;
-            width: 100%;
-            transform: translateY(-50%); /* Ajuste fino del centro */
-            display: flex;
-            justify-content: space-between; /* Una a cada extremo */
-            padding: 0 20px; /* Espacio desde el borde */
-            pointer-events: none; /* Permitir clic en la foto a través del contenedor */
-            z-index: 10;
+            position: absolute; top: 50%; left: 0; width: 100%;
+            transform: translateY(-50%);
+            display: flex; justify-content: space-between;
+            padding: 0 20px; pointer-events: none; z-index: 10;
         }
 
         .nav-btn {
-            background: rgba(255, 255, 255, 0.9); 
-            border: none; 
-            width: 50px; height: 50px;
-            border-radius: 50%; 
+            background: rgba(255, 255, 255, 0.9); border: none; 
+            width: 50px; height: 50px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             transition: transform 0.2s, background 0.2s; 
-            font-size: 1.2rem;
-            pointer-events: auto; /* Reactivar clic en los botones */
+            font-size: 1.2rem; pointer-events: auto;
         }
         .nav-btn:hover { transform: scale(1.1); background: white; }
 
@@ -82,23 +94,17 @@
 
         /* --- COLUMNA DERECHA (INFO) --- */
         .info-panel {
-            width: 35%;
-            padding: 60px 50px; 
-            overflow-y: auto;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-left: 1px solid #eee;
+            width: 35%; padding: 60px 50px; 
+            overflow-y: auto; background: white;
+            display: flex; flex-direction: column;
+            justify-content: center; border-left: 1px solid #eee;
             min-width: 350px;
         }
 
         h1 { margin: 0 0 8px 0; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1;}
         h2 { margin: 0 0 25px 0; font-size: 1.1rem; color: var(--text-gray); font-weight: 400; }
         
-        .price { 
-            font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; 
-        }
+        .price { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
 
         .specs-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 25px;
@@ -109,9 +115,7 @@
         .spec-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px;}
         .spec-value { font-size: 1.1rem; font-weight: 500; }
 
-        .description-box {
-            margin-bottom: 30px; font-size: 0.95rem; line-height: 1.6; color: #4b5563;
-        }
+        .description-box { margin-bottom: 30px; font-size: 0.95rem; line-height: 1.6; color: #4b5563; }
 
         .actions { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
 
@@ -130,13 +134,10 @@
 
         .btn.disabled { background: #e5e7eb; color: #9ca3af; pointer-events: none; }
 
-        /* RESPONSIVE */
         @media (max-width: 900px) {
             .container { flex-direction: column; }
             .image-panel { width: 100%; height: 45%; }
             .info-panel { width: 100%; height: 55%; padding: 30px; justify-content: flex-start; }
-            
-            /* Ajuste de flechas para móvil */
             .carousel-nav { padding: 0 10px; }
             .nav-btn { width: 40px; height: 40px; }
         }
@@ -146,52 +147,47 @@
 
     <div class="container" id="main-content" style="display:none;">
         
-        <!-- CARRUSEL (IZQUIERDA) -->
+        <!-- LADO IZQUIERDO: MEDIA -->
         <div class="image-panel">
-            <img id="carousel-img" src="" alt="Vista Departamento">
-            
-            <div class="image-counter">
-                <span id="current-slide">1</span> / <span id="total-slides">1</span>
+            <!-- 1. Carrusel de Fotos -->
+            <div id="photos-container">
+                <img id="carousel-img" src="" alt="Vista Departamento">
+                <div class="image-counter">
+                    <span id="current-slide">1</span> / <span id="total-slides">1</span>
+                </div>
+                <div class="carousel-nav" id="nav-controls">
+                    <button class="nav-btn" onclick="changeImage(-1)">❮</button>
+                    <button class="nav-btn" onclick="changeImage(1)">❯</button>
+                </div>
             </div>
 
-            <div class="carousel-nav" id="nav-controls">
-                <button class="nav-btn" onclick="changeImage(-1)">❮</button>
-                <button class="nav-btn" onclick="changeImage(1)">❯</button>
+            <!-- 2. Contenedor del Tour (Iframe) -->
+            <div id="tour-container" class="tour-overlay">
+                <button class="close-tour-btn" onclick="closeTour()">⬅ Back to Photos</button>
+                <iframe id="tour-frame" src=""></iframe>
             </div>
         </div>
 
-        <!-- INFO (DERECHA) -->
+        <!-- LADO DERECHO: INFO -->
         <div class="info-panel">
-            
-            <h1 id="apt-id">Unit ...</h1> <!-- CAMBIO: ID vacío por defecto -->
+            <h1 id="apt-id">Unit ...</h1>
             <h2 id="apt-project">Project ...</h2>
-            
             <div class="price" id="apt-price">$...</div>
 
             <div class="specs-grid">
-                <div class="spec-item">
-                    <span class="spec-label">Status</span>
-                    <span class="spec-value" id="apt-status">...</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Area</span>
-                    <span class="spec-value"><span id="apt-area">0</span> m²</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Bedrooms</span>
-                    <span class="spec-value" id="apt-beds">0</span>
-                </div>
-                <div class="spec-item">
-                    <span class="spec-label">Bathrooms</span>
-                    <span class="spec-value" id="apt-baths">0</span>
-                </div>
+                <div class="spec-item"><span class="spec-label">Status</span><span class="spec-value" id="apt-status">...</span></div>
+                <div class="spec-item"><span class="spec-label">Area</span><span class="spec-value"><span id="apt-area">0</span> m²</span></div>
+                <div class="spec-item"><span class="spec-label">Bedrooms</span><span class="spec-value" id="apt-beds">0</span></div>
+                <div class="spec-item"><span class="spec-label">Bathrooms</span><span class="spec-value" id="apt-baths">0</span></div>
             </div>
 
             <div id="apt-description" class="description-box" style="display: none;"></div>
 
             <div class="actions">
-                <a href="#" id="btn-pay" class="btn btn-primary" target="_blank">Reserve Now</a>
-                <a href="#" id="btn-tour" class="btn btn-tour-style" target="_blank" style="display: none;">Virtual Tour 360°</a>
+                <a href="#" id="btn-pay" class="btn btn-primary" target="_blank">Reserve Unit</a>
+                
+                <!-- El botón ahora ejecuta una función JS en lugar de ser un link -->
+                <button id="btn-tour" class="btn btn-tour-style" style="display: none;">Virtual Tour 360°</button>
             </div>
         </div>
 
@@ -216,10 +212,7 @@
 
             if (!aid) return;
 
-            const filter = pid 
-                ? `AND({project_id}='${pid}', {apartment_id}='${aid}')` 
-                : `{apartment_id}='${aid}'`;
-
+            const filter = pid ? `AND({project_id}='${pid}', {apartment_id}='${aid}')` : `{apartment_id}='${aid}'`;
             const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(filter)}`;
 
             try {
@@ -229,9 +222,8 @@
                 if (!data.records.length) throw new Error("No encontrado");
                 const apt = data.records[0].fields;
 
-                // --- CAMBIO: AQUÍ SE MODIFICÓ EL TEXTO A "Unit" ---
+                // Llenar datos
                 document.getElementById('apt-id').textContent = `Unit ${apt.apartment_id}`;
-                
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
                 document.getElementById('apt-status').textContent = apt.status;
@@ -239,31 +231,34 @@
                 document.getElementById('apt-beds').textContent = apt.num_bedrooms;
                 document.getElementById('apt-baths').textContent = apt.num_bathrooms;
 
+                // Descripción
                 const descBox = document.getElementById('apt-description');
                 if (apt.description) {
                     descBox.textContent = apt.description;
                     descBox.style.display = 'block';
-                } else {
-                    descBox.style.display = 'none';
-                }
+                } else { descBox.style.display = 'none'; }
 
+                // Botones
                 const btnPay = document.getElementById('btn-pay');
                 const btnTour = document.getElementById('btn-tour');
 
                 if (apt.status === 'Available') {
                     btnPay.href = apt.payment_url;
-                    btnPay.textContent = "Reserve Unit"; // Cambié a inglés por consistencia con "Unit"
+                    btnPay.textContent = "Reserve Unit";
                 } else {
                     btnPay.classList.add('disabled');
                     btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
                     btnPay.style.background = apt.status === 'Reserved' ? '#f59e0b' : '#ef4444';
                 }
 
+                // Lógica del Tour (Iframe)
                 if (apt.tour_url) {
-                    btnTour.href = apt.tour_url;
                     btnTour.style.display = 'flex';
+                    // Al hacer click, llamamos a la función openTour con la URL
+                    btnTour.onclick = function() { openTour(apt.tour_url); };
                 }
 
+                // Carrusel
                 if (apt.image && apt.image.length > 0) {
                     currentImages = apt.image;
                     updateCarousel(0);
@@ -280,6 +275,28 @@
             }
         }
 
+        // --- FUNCIONES DEL TOUR VIRTUAL (EMBEBIDO) ---
+        function openTour(url) {
+            const tourContainer = document.getElementById('tour-container');
+            const tourFrame = document.getElementById('tour-frame');
+            
+            // Asignamos la URL al iframe
+            tourFrame.src = url;
+            // Mostramos el contenedor (tapará el carrusel)
+            tourContainer.style.display = 'block';
+        }
+
+        function closeTour() {
+            const tourContainer = document.getElementById('tour-container');
+            const tourFrame = document.getElementById('tour-frame');
+            
+            // Ocultamos el contenedor
+            tourContainer.style.display = 'none';
+            // Limpiamos el SRC para detener la carga/audio del tour
+            tourFrame.src = "";
+        }
+
+        // --- FUNCIONES DEL CARRUSEL ---
         function changeImage(direction) {
             currentIndex += direction;
             if (currentIndex >= currentImages.length) currentIndex = 0;
