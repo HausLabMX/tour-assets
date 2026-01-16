@@ -8,9 +8,10 @@
     <style>
         :root { 
             --primary: #1a1a1a; 
-            --accent: #2563eb;
             --text-gray: #6b7280;
-            --bg-light: #f9fafb;
+            --bg-light: #f3f4f6;
+            --yellow-btn: #f59e0b; /* Color amarillo */
+            --yellow-hover: #d97706;
         }
         
         * { box-sizing: border-box; }
@@ -21,42 +22,45 @@
             background-color: #fff; 
             color: var(--primary); 
             height: 100vh; 
-            overflow: hidden; /* Evita scroll doble */
+            overflow: hidden; 
         }
 
-        /* LAYOUT PRINCIPAL - DIVIDIDO */
+        /* LAYOUT PRINCIPAL */
         .container {
             display: flex;
             height: 100%;
             width: 100%;
         }
 
-        /* COLUMNA IZQUIERDA - INFORMACIÓN (30%) */
-        .info-panel {
-            width: 30%;
-            padding: 40px;
-            overflow-y: auto;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid #eee;
-            min-width: 320px;
-        }
-
-        /* COLUMNA DERECHA - CARRUSEL (70%) */
+        /* COLUMNA IZQUIERDA - CARRUSEL (65%) */
+        /* Ahora el carrusel está primero en el HTML para quedar a la izquierda */
         .image-panel {
-            width: 70%;
+            width: 65%;
             background: var(--bg-light);
             position: relative;
             overflow: hidden;
         }
 
-        /* ESTILOS DE TEXTO */
-        h1 { margin: 0 0 10px 0; font-size: 2rem; font-weight: 800; letter-spacing: -1px;}
-        h2 { margin: 0 0 20px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
+        /* COLUMNA DERECHA - INFORMACIÓN (35%) */
+        .info-panel {
+            width: 35%;
+            /* Aumentamos el padding para dar más aire */
+            padding: 60px 50px; 
+            overflow-y: auto;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centra el contenido verticalmente */
+            border-left: 1px solid #eee; /* Borde ahora a la izquierda */
+            min-width: 350px;
+        }
+
+        /* TEXTOS */
+        h1 { margin: 0 0 8px 0; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1;}
+        h2 { margin: 0 0 25px 0; font-size: 1.1rem; color: var(--text-gray); font-weight: 400; }
         
         .price { 
-            font-size: 2.2rem; 
+            font-size: 2.5rem; 
             font-weight: 700; 
             color: var(--primary); 
             margin-bottom: 30px; 
@@ -66,35 +70,51 @@
         .specs-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 40px;
-            padding-bottom: 30px;
+            gap: 25px;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
             border-bottom: 1px solid #eee;
         }
 
         .spec-item { display: flex; flex-direction: column; }
-        .spec-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-gray); font-weight: 600; margin-bottom: 5px;}
-        .spec-value { font-size: 1.1rem; font-weight: 600; }
+        .spec-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px;}
+        .spec-value { font-size: 1.1rem; font-weight: 500; }
+
+        /* DESCRIPCIÓN (NUEVO) */
+        .description-box {
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #4b5563;
+        }
 
         /* BOTONES */
-        .actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .actions { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
 
         .btn {
             display: flex; justify-content: center; align-items: center;
-            padding: 18px; border-radius: 8px;
+            padding: 16px; border-radius: 8px;
             text-decoration: none; font-weight: 600; font-size: 1rem;
             transition: all 0.2s; cursor: pointer; border: none;
         }
 
+        /* Botón Primario (Apartar) - Negro */
         .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #000; transform: translateY(-2px); }
+        .btn-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         
-        .btn-secondary { background: white; color: var(--primary); border: 2px solid var(--primary); }
-        .btn-secondary:hover { background: #f0f0f0; }
+        /* Botón Tour - Amarillo */
+        .btn-tour-style { 
+            background: var(--yellow-btn); 
+            color: white; 
+        }
+        .btn-tour-style:hover { 
+            background: var(--yellow-hover); 
+            transform: translateY(-2px); 
+        }
 
-        .btn.disabled { background: #e5e7eb; color: #9ca3af; pointer-events: none; border: none;}
+        .btn.disabled { background: #e5e7eb; color: #9ca3af; pointer-events: none; }
 
-        /* CARRUSEL IMAGENES */
+        /* CARRUSEL */
         #carousel-img {
             width: 100%; height: 100%;
             object-fit: cover;
@@ -102,33 +122,36 @@
         }
 
         .carousel-nav {
-            position: absolute; bottom: 30px; right: 30px;
+            position: absolute; bottom: 30px; right: 30px; /* Controles a la derecha de la foto */
             display: flex; gap: 10px;
         }
 
         .nav-btn {
-            background: white; border: none; width: 50px; height: 50px;
+            background: white; border: none; width: 45px; height: 45px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s; font-size: 1.2rem;
         }
         .nav-btn:hover { transform: scale(1.1); }
 
         .image-counter {
-            position: absolute; top: 20px; right: 20px;
+            position: absolute; top: 25px; left: 25px; /* Contador a la izquierda */
             background: rgba(0,0,0,0.6); color: white;
-            padding: 5px 12px; border-radius: 20px;
-            font-size: 0.8rem; font-weight: 600;
-            backdrop-filter: blur(4px);
+            padding: 6px 14px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(4px);
         }
 
         /* RESPONSIVE (CELULAR) */
-        @media (max-width: 768px) {
-            .container { flex-direction: column-reverse; }
-            .info-panel { width: 100%; height: 60%; padding: 25px; }
-            .image-panel { width: 100%; height: 40%; }
-            h1 { font-size: 1.5rem; }
-            .price { font-size: 1.8rem; margin-bottom: 20px; }
+        @media (max-width: 900px) {
+            .container { flex-direction: column; } /* Foto arriba, info abajo */
+            .image-panel { width: 100%; height: 45%; }
+            .info-panel { 
+                width: 100%; height: 55%; 
+                padding: 30px; 
+                justify-content: flex-start; /* En celular que empiece arriba */
+            }
+            h1 { font-size: 1.8rem; }
+            .price { font-size: 2rem; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -136,43 +159,7 @@
 
     <div class="container" id="main-content" style="display:none;">
         
-        <!-- IZQUIERDA: DATOS -->
-        <div class="info-panel">
-            <div>
-                <h1 id="apt-id">Unidad ...</h1>
-                <h2 id="apt-project">Proyecto ...</h2>
-                
-                <div class="price" id="apt-price">$...</div>
-
-                <div class="specs-grid">
-                    <div class="spec-item">
-                        <span class="spec-label">Estado</span>
-                        <span class="spec-value" id="apt-status">...</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Área Total</span>
-                        <span class="spec-value"><span id="apt-area">0</span> m²</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Recámaras</span>
-                        <span class="spec-value" id="apt-beds">0</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Baños</span>
-                        <span class="spec-value" id="apt-baths">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="actions">
-                <!-- Botón de Pago -->
-                <a href="#" id="btn-pay" class="btn btn-primary" target="_blank">Apartar Unidad</a>
-                <!-- Botón de Tour Virtual (Oculto por defecto) -->
-                <a href="#" id="btn-tour" class="btn btn-secondary" target="_blank" style="display: none;">Ver Tour 360°</a>
-            </div>
-        </div>
-
-        <!-- DERECHA: CARRUSEL -->
+        <!-- LADO IZQUIERDO: CARRUSEL -->
         <div class="image-panel">
             <img id="carousel-img" src="" alt="Vista Departamento">
             
@@ -186,10 +173,50 @@
             </div>
         </div>
 
+        <!-- LADO DERECHO: INFORMACIÓN -->
+        <div class="info-panel">
+            
+            <h1 id="apt-id">Unidad ...</h1>
+            <h2 id="apt-project">Proyecto ...</h2>
+            
+            <div class="price" id="apt-price">$...</div>
+
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Estado</span>
+                    <span class="spec-value" id="apt-status">...</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Área</span>
+                    <span class="spec-value"><span id="apt-area">0</span> m²</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Recámaras</span>
+                    <span class="spec-value" id="apt-beds">0</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Baños</span>
+                    <span class="spec-value" id="apt-baths">0</span>
+                </div>
+            </div>
+
+            <!-- NUEVA SECCIÓN DE DESCRIPCIÓN -->
+            <div id="apt-description" class="description-box" style="display: none;">
+                <!-- Aquí se inyecta el texto desde Airtable -->
+            </div>
+
+            <div class="actions">
+                <!-- Botón de Pago -->
+                <a href="#" id="btn-pay" class="btn btn-primary" target="_blank">Apartar Unidad</a>
+                <!-- Botón de Tour Virtual (Amarillo) -->
+                <a href="#" id="btn-tour" class="btn btn-tour-style" target="_blank" style="display: none;">Ver Tour 360°</a>
+            </div>
+        </div>
+
     </div>
 
     <!-- ERROR MSG -->
-    <div id="error-msg" style="display:none; text-align:center; padding:50px;">Cargando...</div>
+    <div id="error-msg" style="display:none; text-align:center; padding:50px;">Error de carga.</div>
 
     <script>
         // --- CONFIGURACIÓN ---
@@ -197,7 +224,6 @@
         const BASE_ID = 'appCHPUOlD0TawvoJ';
         const TABLE_NAME = 'Propiedades';
 
-        // Variables del Carrusel
         let currentImages = [];
         let currentIndex = 0;
 
@@ -222,21 +248,28 @@
                 if (!data.records.length) throw new Error("No encontrado");
                 const apt = data.records[0].fields;
 
-                // 1. LLENAR TEXTOS
+                // 1. LLENAR DATOS BÁSICOS
                 document.getElementById('apt-id').textContent = `Unidad ${apt.apartment_id}`;
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
-                
                 document.getElementById('apt-status').textContent = apt.status;
                 document.getElementById('apt-area').textContent = apt.area_total;
                 document.getElementById('apt-beds').textContent = apt.num_bedrooms;
                 document.getElementById('apt-baths').textContent = apt.num_bathrooms;
 
-                // 2. CONFIGURAR BOTONES
+                // 2. DESCRIPCIÓN (Lógica de mostrar/ocultar)
+                const descBox = document.getElementById('apt-description');
+                if (apt.description) {
+                    descBox.textContent = apt.description;
+                    descBox.style.display = 'block';
+                } else {
+                    descBox.style.display = 'none';
+                }
+
+                // 3. BOTONES
                 const btnPay = document.getElementById('btn-pay');
                 const btnTour = document.getElementById('btn-tour');
 
-                // Estado del botón de pago
                 if (apt.status === 'Available') {
                     btnPay.href = apt.payment_url;
                     btnPay.textContent = "Apartar Ahora";
@@ -246,18 +279,16 @@
                     btnPay.style.background = apt.status === 'Reserved' ? '#f59e0b' : '#ef4444';
                 }
 
-                // Botón de Tour Virtual (Si existe link)
                 if (apt.tour_url) {
                     btnTour.href = apt.tour_url;
-                    btnTour.style.display = 'flex'; // Mostrar botón
+                    btnTour.style.display = 'flex';
                 }
 
-                // 3. CONFIGURAR CARRUSEL DE IMÁGENES
+                // 4. CARRUSEL
                 if (apt.image && apt.image.length > 0) {
-                    currentImages = apt.image; // Guardamos el array de fotos de Airtable
-                    updateCarousel(0); // Mostrar la primera
+                    currentImages = apt.image;
+                    updateCarousel(0);
                 } else {
-                    // Imagen por defecto si no hay
                     document.getElementById('carousel-img').src = 'https://via.placeholder.com/800x600?text=Sin+Imagen';
                     document.getElementById('nav-controls').style.display = 'none';
                 }
@@ -267,40 +298,26 @@
             } catch (err) {
                 console.error(err);
                 document.getElementById('error-msg').style.display = 'block';
-                document.getElementById('error-msg').textContent = "Error al cargar datos.";
             }
         }
 
-        // --- LÓGICA DEL CARRUSEL ---
         function changeImage(direction) {
             currentIndex += direction;
-            
-            // Loop infinito
             if (currentIndex >= currentImages.length) currentIndex = 0;
             if (currentIndex < 0) currentIndex = currentImages.length - 1;
-
             updateCarousel(currentIndex);
         }
 
         function updateCarousel(index) {
             const imgElement = document.getElementById('carousel-img');
-            
-            // Efecto suave de opacidad
             imgElement.style.opacity = 0;
-            
             setTimeout(() => {
                 imgElement.src = currentImages[index].url;
                 imgElement.style.opacity = 1;
             }, 200);
-
-            // Actualizar contador (1 / 5)
             document.getElementById('current-slide').textContent = index + 1;
             document.getElementById('total-slides').textContent = currentImages.length;
-
-            // Ocultar flechas si solo hay 1 foto
-            if (currentImages.length <= 1) {
-                document.getElementById('nav-controls').style.display = 'none';
-            }
+            if (currentImages.length <= 1) document.getElementById('nav-controls').style.display = 'none';
         }
 
         init();
