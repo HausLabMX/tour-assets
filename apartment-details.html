@@ -249,7 +249,7 @@
                 const apt = data.records[0].fields;
 
                 // 1. LLENAR DATOS BÁSICOS
-                document.getElementById('apt-id').textContent = `Unidad ${apt.apartment_id}`;
+                document.getElementById('apt-id').textContent = apt.apartment_id;
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
                 document.getElementById('apt-status').textContent = apt.status;
