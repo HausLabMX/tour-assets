@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha Premium</title>
     
-    <!-- OPTIMIZACIÓN DE RED: PRE-CONECTAR A AIRTABLE -->
     <link rel="preconnect" href="https://api.airtable.com">
-    <link rel="dns-prefetch" href="https://api.airtable.com">
-    <link rel="preconnect" href="https://dl.airtable.com"> <!-- Aquí viven las fotos -->
+    <link rel="preconnect" href="https://dl.airtable.com">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -33,7 +31,7 @@
 
         .container { display: flex; height: 100%; width: 100%; }
 
-        /* --- CARGADOR (LOADER) MEJORADO --- */
+        /* LOADER */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 100;
@@ -49,11 +47,18 @@
 
         /* --- COLUMNA IZQUIERDA (MEDIA) --- */
         .image-panel {
-            width: 65%;
+            /* CAMBIO: Ahora ocupa más espacio (72%) */
+            width: 72%; 
             background: var(--bg-light);
             position: relative;
             overflow: hidden;
-            display: flex; 
+            display: flex;
+            transition: width 0.4s ease; /* Transición suave al expandirse */
+        }
+
+        /* Clase para cuando el tour está activo (Ocupa todo) */
+        .image-panel.full-screen {
+            width: 100% !important;
         }
 
         #photos-container { width: 100%; height: 100%; position: relative; }
@@ -74,11 +79,11 @@
 
         .close-tour-btn {
             position: absolute; top: 20px; left: 20px;
-            background: rgba(255, 255, 255, 0.9); color: var(--primary);
-            border: none; padding: 10px 20px; border-radius: 30px; 
-            font-weight: 700; font-size: 0.9rem; cursor: pointer; z-index: 30;
+            background: rgba(255, 255, 255, 0.95); color: var(--primary);
+            border: none; padding: 12px 24px; border-radius: 30px; 
+            font-weight: 700; font-size: 0.95rem; cursor: pointer; z-index: 30;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
+            transition: transform 0.2s; display: flex; align-items: center; gap: 8px;
         }
         .close-tour-btn:hover { transform: scale(1.05); background: white; }
 
@@ -107,28 +112,36 @@
 
         /* --- COLUMNA DERECHA (INFO) --- */
         .info-panel {
-            width: 35%; padding: 60px 50px; 
+            /* CAMBIO: Ahora es más angosta (28%) */
+            width: 28%; 
+            padding: 50px 40px; /* Padding ajustado */
             overflow-y: auto; background: white;
             display: flex; flex-direction: column;
             justify-content: center; border-left: 1px solid #eee;
-            min-width: 350px;
+            min-width: 320px; /* Evita que se rompa si se hace muy chico */
+            transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
-        h1 { margin: 0 0 8px 0; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1;}
-        h2 { margin: 0 0 25px 0; font-size: 1.1rem; color: var(--text-gray); font-weight: 400; }
+        /* Clase para ocultar el panel suavemente */
+        .info-panel.hidden {
+            display: none; 
+        }
+
+        h1 { margin: 0 0 8px 0; font-size: 2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1;}
+        h2 { margin: 0 0 25px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
         
-        .price { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
+        .price { font-size: 2.2rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
 
         .specs-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 25px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
             margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee;
         }
 
         .spec-item { display: flex; flex-direction: column; }
         .spec-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px;}
-        .spec-value { font-size: 1.1rem; font-weight: 500; }
+        .spec-value { font-size: 1rem; font-weight: 500; }
 
-        .description-box { margin-bottom: 30px; font-size: 0.95rem; line-height: 1.6; color: #4b5563; }
+        .description-box { margin-bottom: 30px; font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
 
         .actions { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
 
@@ -147,9 +160,12 @@
 
         .btn.disabled { background: #e5e7eb; color: #9ca3af; pointer-events: none; }
 
+        /* MÓVIL */
         @media (max-width: 900px) {
             .container { flex-direction: column; }
             .image-panel { width: 100%; height: 45%; }
+            .image-panel.full-screen { height: 100%; } /* En móvil ocupa todo el alto */
+            
             .info-panel { width: 100%; height: 55%; padding: 30px; justify-content: flex-start; }
             .carousel-nav { padding: 0 10px; }
             .nav-btn { width: 40px; height: 40px; }
@@ -158,16 +174,15 @@
 </head>
 <body>
 
-    <!-- PANTALLA DE CARGA -->
     <div id="loading-screen">
         <div class="spinner"></div>
-        <div style="color: #666; font-size: 0.9rem;">Loading data...</div>
+        <div style="color: #666; font-size: 0.9rem;">Loading...</div>
     </div>
 
     <div class="container" id="main-content" style="display:none;">
         
-        <!-- MEDIA -->
-        <div class="image-panel">
+        <!-- MEDIA PANEL -->
+        <div class="image-panel" id="left-panel">
             <div id="photos-container">
                 <img id="carousel-img" src="" alt="Vista Departamento">
                 <div class="image-counter">
@@ -185,8 +200,8 @@
             </div>
         </div>
 
-        <!-- INFO -->
-        <div class="info-panel">
+        <!-- INFO PANEL -->
+        <div class="info-panel" id="right-panel">
             <h1 id="apt-id">Unit ...</h1>
             <h2 id="apt-project">Project ...</h2>
             <div class="price" id="apt-price">$...</div>
@@ -208,10 +223,7 @@
 
     </div>
 
-    <!-- ERROR -->
-    <div id="error-msg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:101; display:none; justify-content:center; align-items:center; color:red;">
-        Error loading data. Please check connection.
-    </div>
+    <div id="error-msg" style="display:none; text-align:center; padding:50px;">Error loading data.</div>
 
     <script>
         const AIRTABLE_TOKEN = 'patLtwhe1uThg13Zi.a7a0336579f1cc184e29b7593bb98a41fdad9fe5f82e1d68923580c94c539716'; 
@@ -227,10 +239,7 @@
             const pid = getParam('project');
             const aid = getParam('id');
 
-            if (!aid) {
-                console.error("ID no encontrado en URL");
-                return;
-            }
+            if (!aid) return;
 
             const filter = pid ? `AND({project_id}='${pid}', {apartment_id}='${aid}')` : `{apartment_id}='${aid}'`;
             const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(filter)}`;
@@ -242,7 +251,6 @@
                 if (!data.records.length) throw new Error("No encontrado");
                 const apt = data.records[0].fields;
 
-                // Datos
                 document.getElementById('apt-id').textContent = `Unit ${apt.apartment_id}`;
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
@@ -284,70 +292,28 @@
                     document.getElementById('nav-controls').style.display = 'none';
                 }
 
-                // Ocultar loader y mostrar contenido
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'flex';
 
             } catch (err) {
                 console.error(err);
                 document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('error-msg').style.display = 'flex';
+                document.getElementById('error-msg').style.display = 'block';
             }
         }
 
+        // --- LÓGICA DE EXPANSIÓN DE PANTALLA ---
         function openTour(url) {
             const tourContainer = document.getElementById('tour-container');
             const tourFrame = document.getElementById('tour-frame');
+            const leftPanel = document.getElementById('left-panel');
+            const rightPanel = document.getElementById('right-panel');
+            
+            // 1. Ocultar panel de info
+            rightPanel.style.display = 'none';
+            // 2. Expandir panel de imagen al 100%
+            leftPanel.classList.add('full-screen');
+
+            // 3. Cargar iframe
             tourFrame.src = url;
-            tourContainer.style.display = 'block';
-        }
-
-        function closeTour() {
-            const tourContainer = document.getElementById('tour-container');
-            const tourFrame = document.getElementById('tour-frame');
-            tourContainer.style.display = 'none';
-            tourFrame.src = "";
-        }
-
-        function changeImage(direction) {
-            currentIndex += direction;
-            if (currentIndex >= currentImages.length) currentIndex = 0;
-            if (currentIndex < 0) currentIndex = currentImages.length - 1;
-            updateCarousel(currentIndex);
-        }
-
-        // --- FUNCIÓN OPTIMIZADA PARA MÓVILES ---
-        function updateCarousel(index) {
-            const imgElement = document.getElementById('carousel-img');
-            const photoData = currentImages[index];
-            
-            // LÓGICA DE SELECCIÓN DE IMAGEN:
-            // 1. Intentar usar miniatura grande (Airtable 'large' suele ser 1024px ancho máx)
-            // 2. Si no, usar 'full' (pero sigue siendo miniatura)
-            // 3. Último recurso: usar la original gigante ('url')
-            
-            let imageUrl = photoData.url; // Default (Pesada)
-
-            if (photoData.thumbnails) {
-                if (photoData.thumbnails.large) {
-                    imageUrl = photoData.thumbnails.large.url; // Óptima para Web
-                } else if (photoData.thumbnails.full) {
-                    imageUrl = photoData.thumbnails.full.url;
-                }
-            }
-
-            imgElement.style.opacity = 0;
-            setTimeout(() => {
-                imgElement.src = imageUrl;
-                imgElement.style.opacity = 1;
-            }, 200);
-            
-            document.getElementById('current-slide').textContent = index + 1;
-            document.getElementById('total-slides').textContent = currentImages.length;
-            if (currentImages.length <= 1) document.getElementById('nav-controls').style.display = 'none';
-        }
-
-        init();
-    </script>
-</body>
-</html>
+            tourContainer.style.display =
