@@ -21,6 +21,7 @@
             --status-green: #10b981;
             --status-red: #ef4444;
             --status-yellow: #f59e0b;
+            --disabled-gray: #4b5563; /* Gris para botón vendido */
         }
         
         * { box-sizing: border-box; }
@@ -41,7 +42,6 @@
             background-color: #fff;
         }
 
-        /* LOADER */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 100; border-radius: 24px;
@@ -116,39 +116,57 @@
             overflow-y: auto; background: white;
             display: flex; flex-direction: column;
             justify-content: center; border-left: 1px solid #eee;
-            min-width: 320px; 
+            min-width: 350px; 
             transition: transform 0.4s ease, opacity 0.4s ease;
         }
         .info-panel.hidden { display: none; }
 
-        h1 { margin: 0 0 8px 0; font-size: 2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1;}
+        /* CABECERA (TÍTULO + STATUS) */
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        h1 { 
+            margin: 0; 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            letter-spacing: -1px; 
+            line-height: 1.1;
+            flex-grow: 1;
+        }
+        
         h2 { margin: 0 0 25px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
         
         .price { font-size: 2.2rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
 
-        /* GRID CON ICONOS */
+        /* GRID DE 3 COLUMNAS */
         .specs-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); /* 3 Columnas */
+            gap: 15px;
             margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee;
         }
         .spec-item { display: flex; flex-direction: column; }
         
         .spec-label { 
-            font-size: 0.75rem; text-transform: uppercase; color: var(--text-gray); 
+            font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); 
             font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;
-            display: flex; align-items: center; gap: 6px; 
+            display: flex; align-items: center; gap: 5px; 
         }
         
-        /* Iconos SVG */
         .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
-
         .spec-value { font-size: 1.1rem; font-weight: 600; }
 
-        /* ESTILO BADGE PARA STATUS */
+        /* STATUS BADGE */
         .status-badge {
-            display: inline-block; padding: 6px 12px; border-radius: 50px;
-            font-size: 0.85rem; font-weight: 700; color: white;
-            text-transform: uppercase; letter-spacing: 0.5px; margin-top: -4px; 
+            display: inline-block; padding: 5px 10px; border-radius: 50px;
+            font-size: 0.7rem; font-weight: 700; color: white;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; flex-shrink: 0;
         }
         .badge-available { background-color: var(--status-green); }
         .badge-sold { background-color: var(--status-red); }
@@ -168,7 +186,14 @@
         .btn-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .btn-tour-style { background: var(--yellow-btn); color: white; }
         .btn-tour-style:hover { background: var(--yellow-hover); transform: translateY(-2px); }
-        .btn.disabled { background: #e5e7eb; color: #9ca3af; pointer-events: none; }
+        
+        /* Estilo Botón Deshabilitado (Gris oscuro + Texto Blanco) */
+        .btn.disabled { 
+            background: var(--disabled-gray) !important; 
+            color: #ffffff !important; 
+            pointer-events: none; 
+            opacity: 0.8;
+        }
 
         @media (max-width: 900px) {
             .container { flex-direction: column; border-radius: 0; }
@@ -178,6 +203,7 @@
             .info-panel { width: 100%; height: 55%; padding: 30px; justify-content: flex-start; }
             .carousel-nav { padding: 0 10px; }
             .nav-btn { width: 40px; height: 40px; }
+            .specs-grid { grid-template-columns: 1fr 1fr 1fr; } /* Mantener 3 col en móvil si caben, sino ajustar a 1fr */
         }
     </style>
 </head>
@@ -209,17 +235,17 @@
         </div>
 
         <div class="info-panel" id="right-panel">
-            <h1 id="apt-id">Unit ...</h1>
+            
+            <!-- HEADER (TITULO + BADGE) -->
+            <div class="header-row">
+                <h1 id="apt-name">Unit ...</h1>
+                <span id="apt-status-container">...</span>
+            </div>
+
             <h2 id="apt-project">Project ...</h2>
             <div class="price" id="apt-price">$...</div>
 
             <div class="specs-grid">
-                <!-- Status -->
-                <div class="spec-item">
-                    <span class="spec-label">Status</span>
-                    <span id="apt-status-container">...</span>
-                </div>
-
                 <!-- Area -->
                 <div class="spec-item">
                     <span class="spec-label">
@@ -238,10 +264,10 @@
                     <span class="spec-value" id="apt-beds">0</span>
                 </div>
 
-                <!-- Bathrooms (WC ICON) -->
+                <!-- Bathrooms (NUEVO ICONO WC) -->
                 <div class="spec-item">
                     <span class="spec-label">
-                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2c2.21 0 4 1.79 4 4v2h2v2H6V8h2V6c0-2.21 1.79-4 4-4zm2 4c0-1.1-.9-2-2-2s-2 .9-2 2v2h4V6zm-8 5h12v3h-1.09l-1.33 8H7.42l-1.33-8H4v-3zm3.11 3l.83 5h8.12l.83-5H7.11z"/></svg>
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 22h6c1.1 0 2-.9 2-2V9h2V7H5v2h2v11c0 1.1.9 2 2 2zm2-12h2v2h-2v-2zm1-8C9.24 2 7 4.24 7 7h10c0-2.76-2.24-5-5-5z"/></svg>
                         Bathrooms
                     </span>
                     <span class="spec-value" id="apt-baths">0</span>
@@ -286,22 +312,20 @@
                 if (!data.records.length) throw new Error("No encontrado");
                 const apt = data.records[0].fields;
 
-                document.getElementById('apt-id').textContent = `Unit ${apt.apartment_id}`;
+                // CAMBIO: USAR CAMPO 'name' O DEFAULT AL ID
+                const tituloDisplay = apt.name ? apt.name : `Unit ${apt.apartment_id}`;
+                document.getElementById('apt-name').textContent = tituloDisplay;
+                
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
                 
-                // Status Badge
+                // BADGE
                 const statusContainer = document.getElementById('apt-status-container');
                 statusContainer.textContent = apt.status;
                 statusContainer.className = 'status-badge'; 
-                
-                if (apt.status === 'Available') {
-                    statusContainer.classList.add('badge-available');
-                } else if (apt.status === 'Reserved') {
-                    statusContainer.classList.add('badge-reserved');
-                } else {
-                    statusContainer.classList.add('badge-sold');
-                }
+                if (apt.status === 'Available') statusContainer.classList.add('badge-available');
+                else if (apt.status === 'Reserved') statusContainer.classList.add('badge-reserved');
+                else statusContainer.classList.add('badge-sold');
 
                 document.getElementById('apt-area').textContent = apt.area_total;
                 document.getElementById('apt-beds').textContent = apt.num_bedrooms;
@@ -319,12 +343,14 @@
                 if (apt.status === 'Available') {
                     btnPay.href = apt.payment_url;
                     btnPay.textContent = "Reserve Unit";
-                    btnPay.style.color = '#ffffff'; 
+                    btnPay.className = "btn btn-primary"; // Reset clases
+                    btnPay.style.color = ''; // Reset estilo inline
                 } else {
                     btnPay.classList.add('disabled');
                     btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
-                    btnPay.style.background = apt.status === 'Reserved' ? '#f59e0b' : '#ef4444';
-                    btnPay.style.color = '#ffffff'; 
+                    // Color gris definido en CSS, removemos estilos inline de versiones anteriores
+                    btnPay.style.background = ''; 
+                    btnPay.style.color = ''; 
                 }
 
                 if (apt.tour_url) {
