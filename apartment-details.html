@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://api.airtable.com">
     <link rel="preconnect" href="https://dl.airtable.com">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root { 
             --primary: #1a1a1a; 
@@ -16,6 +16,11 @@
             --bg-light: #f3f4f6;
             --yellow-btn: #f59e0b;
             --yellow-hover: #d97706;
+            
+            /* Colores de Estado */
+            --status-green: #10b981;
+            --status-red: #ef4444;
+            --status-yellow: #f59e0b;
         }
         
         * { box-sizing: border-box; }
@@ -23,7 +28,6 @@
         body { 
             font-family: 'Inter', sans-serif; 
             margin: 0; padding: 0; 
-            /* CAMBIO: Fondo transparente para que se vean las curvas */
             background-color: transparent; 
             color: var(--primary); 
             height: 100vh; 
@@ -31,21 +35,16 @@
         }
 
         .container { 
-            display: flex; 
-            height: 100%; 
-            width: 100%;
-            /* CAMBIO: Bordes redondeados y sombra suave */
-            border-radius: 24px; 
-            overflow: hidden; /* IMPORTANTE: Recorta las imágenes en las curvas */
-            box-shadow: 0 10px 40px rgba(0,0,0,0.25); /* Sombra para profundidad */
-            background-color: #fff; /* El fondo blanco va aquí ahora */
+            display: flex; height: 100%; width: 100%;
+            border-radius: 24px; overflow: hidden; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25); 
+            background-color: #fff;
         }
 
         /* LOADER */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 100;
-            border-radius: 24px; /* También redondeamos el loader */
+            background: white; z-index: 100; border-radius: 24px;
             display: flex; justify-content: center; align-items: center;
             flex-direction: column;
         }
@@ -58,14 +57,10 @@
 
         /* --- MEDIA (IZQUIERDA) --- */
         .image-panel {
-            width: 72%; 
-            background: var(--bg-light);
-            position: relative;
-            overflow: hidden;
-            display: flex;
+            width: 72%; background: var(--bg-light);
+            position: relative; overflow: hidden; display: flex;
             transition: width 0.4s ease;
         }
-
         .image-panel.full-screen { width: 100% !important; }
 
         #photos-container { width: 100%; height: 100%; position: relative; }
@@ -81,7 +76,6 @@
             width: 100%; height: 100%;
             background: black; z-index: 20; display: none; 
         }
-
         iframe { width: 100%; height: 100%; border: none; }
 
         .close-tour-btn {
@@ -99,7 +93,6 @@
             transform: translateY(-50%); display: flex; justify-content: space-between;
             padding: 0 20px; pointer-events: none; z-index: 10;
         }
-
         .nav-btn {
             background: rgba(255, 255, 255, 0.9); border: none; 
             width: 50px; height: 50px; border-radius: 50%; 
@@ -119,15 +112,13 @@
 
         /* --- INFO (DERECHA) --- */
         .info-panel {
-            width: 28%; 
-            padding: 50px 40px; 
+            width: 28%; padding: 50px 40px; 
             overflow-y: auto; background: white;
             display: flex; flex-direction: column;
             justify-content: center; border-left: 1px solid #eee;
             min-width: 320px; 
             transition: transform 0.4s ease, opacity 0.4s ease;
         }
-
         .info-panel.hidden { display: none; }
 
         h1 { margin: 0 0 8px 0; font-size: 2rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1;}
@@ -135,14 +126,40 @@
         
         .price { font-size: 2.2rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
 
+        /* GRID CON ICONOS */
         .specs-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
             margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee;
         }
-
         .spec-item { display: flex; flex-direction: column; }
-        .spec-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px;}
-        .spec-value { font-size: 1rem; font-weight: 500; }
+        
+        .spec-label { 
+            font-size: 0.75rem; text-transform: uppercase; color: var(--text-gray); 
+            font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 6px; /* Espacio entre icono y texto */
+        }
+        
+        /* Iconos SVG */
+        .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
+
+        .spec-value { font-size: 1.1rem; font-weight: 600; }
+
+        /* ESTILO BADGE PARA STATUS */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: -4px; /* Ajuste visual */
+        }
+        /* Colores dinámicos */
+        .badge-available { background-color: var(--status-green); }
+        .badge-sold { background-color: var(--status-red); }
+        .badge-reserved { background-color: var(--status-yellow); }
 
         .description-box { margin-bottom: 30px; font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
 
@@ -154,17 +171,14 @@
             text-decoration: none; font-weight: 600; font-size: 1rem;
             transition: all 0.2s; cursor: pointer; border: none;
         }
-
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        
         .btn-tour-style { background: var(--yellow-btn); color: white; }
         .btn-tour-style:hover { background: var(--yellow-hover); transform: translateY(-2px); }
-
         .btn.disabled { background: #e5e7eb; color: #9ca3af; pointer-events: none; }
 
         @media (max-width: 900px) {
-            .container { flex-direction: column; border-radius: 0; } /* En móvil quitamos curvas si ocupa toda la pantalla */
+            .container { flex-direction: column; border-radius: 0; }
             #loading-screen { border-radius: 0; }
             .image-panel { width: 100%; height: 45%; }
             .image-panel.full-screen { height: 100%; } 
@@ -183,7 +197,6 @@
 
     <div class="container" id="main-content" style="display:none;">
         
-        <!-- MEDIA PANEL -->
         <div class="image-panel" id="left-panel">
             <div id="photos-container">
                 <img id="carousel-img" src="" alt="Vista Departamento">
@@ -202,17 +215,47 @@
             </div>
         </div>
 
-        <!-- INFO PANEL -->
         <div class="info-panel" id="right-panel">
             <h1 id="apt-id">Unit ...</h1>
             <h2 id="apt-project">Project ...</h2>
             <div class="price" id="apt-price">$...</div>
 
             <div class="specs-grid">
-                <div class="spec-item"><span class="spec-label">Status</span><span class="spec-value" id="apt-status">...</span></div>
-                <div class="spec-item"><span class="spec-label">Area</span><span class="spec-value"><span id="apt-area">0</span> m²</span></div>
-                <div class="spec-item"><span class="spec-label">Bedrooms</span><span class="spec-value" id="apt-beds">0</span></div>
-                <div class="spec-item"><span class="spec-label">Bathrooms</span><span class="spec-value" id="apt-baths">0</span></div>
+                <!-- Estado (Ahora con icono también, opcional) -->
+                <div class="spec-item">
+                    <span class="spec-label">
+                        Status
+                    </span>
+                    <!-- Aquí se inyectará el span con la clase de color -->
+                    <span id="apt-status-container">...</span>
+                </div>
+
+                <!-- Área -->
+                <div class="spec-item">
+                    <span class="spec-label">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3ZM3 5H21V19H3V5ZM5 7V9H7V7H5ZM9 7V9H11V7H9ZM13 7V9H15V7H13ZM5 11V13H7V11H5ZM9 11V13H11V11H9ZM5 15V17H7V15H5Z"/></svg>
+                        Area
+                    </span>
+                    <span class="spec-value"><span id="apt-area">0</span> m²</span>
+                </div>
+
+                <!-- Recámaras -->
+                <div class="spec-item">
+                    <span class="spec-label">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 10V7C20 5.34315 18.6569 4 17 4H7C5.34315 4 4 5.34315 4 7V10C2.34315 10 1 11.3431 1 13V19H3V21H5V19H19V21H21V19H23V13C23 11.3431 21.6569 10 20 10ZM7 6H17C17.5523 6 18 6.44772 18 7V10H6V7C6 6.44772 6.44772 6 7 6ZM21 17H3V13C3 12.4477 3.44772 12 4 12H20C20.5523 12 21 12.4477 21 13V17Z"/></svg>
+                        Bedrooms
+                    </span>
+                    <span class="spec-value" id="apt-beds">0</span>
+                </div>
+
+                <!-- Baños -->
+                <div class="spec-item">
+                    <span class="spec-label">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 13V4.83C20 3.27 18.73 2 17.17 2C16.92 2 16.68 2.03 16.44 2.1L4.56 5.27C3.08 5.66 2 7.01 2 8.54V13H20ZM6 7C6 6.45 6.45 6 7 6C7.55 6 8 6.45 8 7C8 7.55 7.55 8 7 8C6.45 8 6 7.55 6 7ZM22 4V13C22 15.76 19.76 18 17 18H13V20H17C17.55 20 18 20.45 18 21C18 21.55 17.55 22 17 22H7C6.45 22 6 21.55 6 21C6 20.45 6.45 20 7 20H11V18H7C4.24 18 2 15.76 2 13H22V4Z"/></svg>
+                        Bathrooms
+                    </span>
+                    <span class="spec-value" id="apt-baths">0</span>
+                </div>
             </div>
 
             <div id="apt-description" class="description-box" style="display: none;"></div>
@@ -256,7 +299,20 @@
                 document.getElementById('apt-id').textContent = `Unit ${apt.apartment_id}`;
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
-                document.getElementById('apt-status').textContent = apt.status;
+                
+                // --- LÓGICA DE STATUS BADGE ---
+                const statusContainer = document.getElementById('apt-status-container');
+                statusContainer.textContent = apt.status;
+                statusContainer.className = 'status-badge'; // Resetear clase base
+                
+                if (apt.status === 'Available') {
+                    statusContainer.classList.add('badge-available');
+                } else if (apt.status === 'Reserved') {
+                    statusContainer.classList.add('badge-reserved');
+                } else {
+                    statusContainer.classList.add('badge-sold');
+                }
+
                 document.getElementById('apt-area').textContent = apt.area_total;
                 document.getElementById('apt-beds').textContent = apt.num_bedrooms;
                 document.getElementById('apt-baths').textContent = apt.num_bathrooms;
@@ -309,10 +365,8 @@
             const tourFrame = document.getElementById('tour-frame');
             const leftPanel = document.getElementById('left-panel');
             const rightPanel = document.getElementById('right-panel');
-            
             rightPanel.style.display = 'none';
             leftPanel.classList.add('full-screen');
-
             tourFrame.src = url;
             tourContainer.style.display = 'block';
         }
@@ -322,10 +376,8 @@
             const tourFrame = document.getElementById('tour-frame');
             const leftPanel = document.getElementById('left-panel');
             const rightPanel = document.getElementById('right-panel');
-            
             leftPanel.classList.remove('full-screen');
             rightPanel.style.display = 'flex';
-
             tourContainer.style.display = 'none';
             tourFrame.src = "";
         }
@@ -341,19 +393,15 @@
             const imgElement = document.getElementById('carousel-img');
             const photoData = currentImages[index];
             const anchoPantalla = window.innerWidth;
-            
             let imageUrl = photoData.url;
-
             if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
                 imageUrl = photoData.thumbnails.large.url;
             } 
-
             imgElement.style.opacity = 0;
             setTimeout(() => {
                 imgElement.src = imageUrl;
                 imgElement.style.opacity = 1;
             }, 200);
-            
             document.getElementById('current-slide').textContent = index + 1;
             document.getElementById('total-slides').textContent = currentImages.length;
             if (currentImages.length <= 1) document.getElementById('nav-controls').style.display = 'none';
