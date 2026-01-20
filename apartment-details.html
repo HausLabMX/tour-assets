@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha Premium</title>
+    
+    <!-- OPTIMIZACIÓN DE RED: PRE-CONECTAR A AIRTABLE -->
+    <link rel="preconnect" href="https://api.airtable.com">
+    <link rel="dns-prefetch" href="https://api.airtable.com">
+    <link rel="preconnect" href="https://dl.airtable.com"> <!-- Aquí viven las fotos -->
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -27,6 +33,20 @@
 
         .container { display: flex; height: 100%; width: 100%; }
 
+        /* --- CARGADOR (LOADER) MEJORADO --- */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 100;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         /* --- COLUMNA IZQUIERDA (MEDIA) --- */
         .image-panel {
             width: 65%;
@@ -36,9 +56,7 @@
             display: flex; 
         }
 
-        #photos-container {
-            width: 100%; height: 100%; position: relative;
-        }
+        #photos-container { width: 100%; height: 100%; position: relative; }
 
         #carousel-img {
             width: 100%; height: 100%;
@@ -140,8 +158,15 @@
 </head>
 <body>
 
+    <!-- PANTALLA DE CARGA -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <div style="color: #666; font-size: 0.9rem;">Loading data...</div>
+    </div>
+
     <div class="container" id="main-content" style="display:none;">
         
+        <!-- MEDIA -->
         <div class="image-panel">
             <div id="photos-container">
                 <img id="carousel-img" src="" alt="Vista Departamento">
@@ -160,6 +185,7 @@
             </div>
         </div>
 
+        <!-- INFO -->
         <div class="info-panel">
             <h1 id="apt-id">Unit ...</h1>
             <h2 id="apt-project">Project ...</h2>
@@ -182,7 +208,10 @@
 
     </div>
 
-    <div id="error-msg" style="display:none; text-align:center; padding:50px;">Loading data...</div>
+    <!-- ERROR -->
+    <div id="error-msg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:101; display:none; justify-content:center; align-items:center; color:red;">
+        Error loading data. Please check connection.
+    </div>
 
     <script>
         const AIRTABLE_TOKEN = 'patLtwhe1uThg13Zi.a7a0336579f1cc184e29b7593bb98a41fdad9fe5f82e1d68923580c94c539716'; 
@@ -198,7 +227,10 @@
             const pid = getParam('project');
             const aid = getParam('id');
 
-            if (!aid) return;
+            if (!aid) {
+                console.error("ID no encontrado en URL");
+                return;
+            }
 
             const filter = pid ? `AND({project_id}='${pid}', {apartment_id}='${aid}')` : `{apartment_id}='${aid}'`;
             const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(filter)}`;
@@ -210,6 +242,7 @@
                 if (!data.records.length) throw new Error("No encontrado");
                 const apt = data.records[0].fields;
 
+                // Datos
                 document.getElementById('apt-id').textContent = `Unit ${apt.apartment_id}`;
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
@@ -230,14 +263,11 @@
                 if (apt.status === 'Available') {
                     btnPay.href = apt.payment_url;
                     btnPay.textContent = "Reserve Unit";
-                    // Aseguramos que si es disponible el texto sea blanco también (heredado de btn-primary)
                     btnPay.style.color = '#ffffff'; 
                 } else {
                     btnPay.classList.add('disabled');
                     btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
                     btnPay.style.background = apt.status === 'Reserved' ? '#f59e0b' : '#ef4444';
-                    
-                    // --- CORRECCIÓN: FORZAMOS TEXTO BLANCO ---
                     btnPay.style.color = '#ffffff'; 
                 }
 
@@ -254,11 +284,14 @@
                     document.getElementById('nav-controls').style.display = 'none';
                 }
 
+                // Ocultar loader y mostrar contenido
+                document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'flex';
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('error-msg').style.display = 'block';
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('error-msg').style.display = 'flex';
             }
         }
 
@@ -283,13 +316,32 @@
             updateCarousel(currentIndex);
         }
 
+        // --- FUNCIÓN OPTIMIZADA PARA MÓVILES ---
         function updateCarousel(index) {
             const imgElement = document.getElementById('carousel-img');
+            const photoData = currentImages[index];
+            
+            // LÓGICA DE SELECCIÓN DE IMAGEN:
+            // 1. Intentar usar miniatura grande (Airtable 'large' suele ser 1024px ancho máx)
+            // 2. Si no, usar 'full' (pero sigue siendo miniatura)
+            // 3. Último recurso: usar la original gigante ('url')
+            
+            let imageUrl = photoData.url; // Default (Pesada)
+
+            if (photoData.thumbnails) {
+                if (photoData.thumbnails.large) {
+                    imageUrl = photoData.thumbnails.large.url; // Óptima para Web
+                } else if (photoData.thumbnails.full) {
+                    imageUrl = photoData.thumbnails.full.url;
+                }
+            }
+
             imgElement.style.opacity = 0;
             setTimeout(() => {
-                imgElement.src = currentImages[index].url;
+                imgElement.src = imageUrl;
                 imgElement.style.opacity = 1;
             }, 200);
+            
             document.getElementById('current-slide').textContent = index + 1;
             document.getElementById('total-slides').textContent = currentImages.length;
             if (currentImages.length <= 1) document.getElementById('nav-controls').style.display = 'none';
