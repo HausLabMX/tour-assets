@@ -316,4 +316,54 @@
 
             // 3. Cargar iframe
             tourFrame.src = url;
-            tourContainer.style.display =
+            tourContainer.style.display = 'block';
+        }
+
+        function closeTour() {
+            const tourContainer = document.getElementById('tour-container');
+            const tourFrame = document.getElementById('tour-frame');
+            const leftPanel = document.getElementById('left-panel');
+            const rightPanel = document.getElementById('right-panel');
+            
+            // 1. Restaurar layout
+            leftPanel.classList.remove('full-screen');
+            rightPanel.style.display = 'flex';
+
+            // 2. Cerrar iframe
+            tourContainer.style.display = 'none';
+            tourFrame.src = "";
+        }
+
+        function changeImage(direction) {
+            currentIndex += direction;
+            if (currentIndex >= currentImages.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = currentImages.length - 1;
+            updateCarousel(currentIndex);
+        }
+
+        function updateCarousel(index) {
+            const imgElement = document.getElementById('carousel-img');
+            const photoData = currentImages[index];
+            const anchoPantalla = window.innerWidth;
+            
+            let imageUrl = photoData.url;
+
+            if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
+                imageUrl = photoData.thumbnails.large.url;
+            } 
+
+            imgElement.style.opacity = 0;
+            setTimeout(() => {
+                imgElement.src = imageUrl;
+                imgElement.style.opacity = 1;
+            }, 200);
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('total-slides').textContent = currentImages.length;
+            if (currentImages.length <= 1) document.getElementById('nav-controls').style.display = 'none';
+        }
+
+        init();
+    </script>
+</body>
+</html>
