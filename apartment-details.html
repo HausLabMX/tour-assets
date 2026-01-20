@@ -136,7 +136,7 @@
         .spec-label { 
             font-size: 0.75rem; text-transform: uppercase; color: var(--text-gray); 
             font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;
-            display: flex; align-items: center; gap: 6px; /* Espacio entre icono y texto */
+            display: flex; align-items: center; gap: 6px; 
         }
         
         /* Iconos SVG */
@@ -146,17 +146,10 @@
 
         /* ESTILO BADGE PARA STATUS */
         .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: -4px; /* Ajuste visual */
+            display: inline-block; padding: 6px 12px; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 700; color: white;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-top: -4px; 
         }
-        /* Colores dinámicos */
         .badge-available { background-color: var(--status-green); }
         .badge-sold { background-color: var(--status-red); }
         .badge-reserved { background-color: var(--status-yellow); }
@@ -221,16 +214,13 @@
             <div class="price" id="apt-price">$...</div>
 
             <div class="specs-grid">
-                <!-- Estado (Ahora con icono también, opcional) -->
+                <!-- Status -->
                 <div class="spec-item">
-                    <span class="spec-label">
-                        Status
-                    </span>
-                    <!-- Aquí se inyectará el span con la clase de color -->
+                    <span class="spec-label">Status</span>
                     <span id="apt-status-container">...</span>
                 </div>
 
-                <!-- Área -->
+                <!-- Area -->
                 <div class="spec-item">
                     <span class="spec-label">
                         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3ZM3 5H21V19H3V5ZM5 7V9H7V7H5ZM9 7V9H11V7H9ZM13 7V9H15V7H13ZM5 11V13H7V11H5ZM9 11V13H11V11H9ZM5 15V17H7V15H5Z"/></svg>
@@ -239,7 +229,7 @@
                     <span class="spec-value"><span id="apt-area">0</span> m²</span>
                 </div>
 
-                <!-- Recámaras -->
+                <!-- Bedrooms -->
                 <div class="spec-item">
                     <span class="spec-label">
                         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 10V7C20 5.34315 18.6569 4 17 4H7C5.34315 4 4 5.34315 4 7V10C2.34315 10 1 11.3431 1 13V19H3V21H5V19H19V21H21V19H23V13C23 11.3431 21.6569 10 20 10ZM7 6H17C17.5523 6 18 6.44772 18 7V10H6V7C6 6.44772 6.44772 6 7 6ZM21 17H3V13C3 12.4477 3.44772 12 4 12H20C20.5523 12 21 12.4477 21 13V17Z"/></svg>
@@ -248,10 +238,10 @@
                     <span class="spec-value" id="apt-beds">0</span>
                 </div>
 
-                <!-- Baños -->
+                <!-- Bathrooms (WC ICON) -->
                 <div class="spec-item">
                     <span class="spec-label">
-                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 13V4.83C20 3.27 18.73 2 17.17 2C16.92 2 16.68 2.03 16.44 2.1L4.56 5.27C3.08 5.66 2 7.01 2 8.54V13H20ZM6 7C6 6.45 6.45 6 7 6C7.55 6 8 6.45 8 7C8 7.55 7.55 8 7 8C6.45 8 6 7.55 6 7ZM22 4V13C22 15.76 19.76 18 17 18H13V20H17C17.55 20 18 20.45 18 21C18 21.55 17.55 22 17 22H7C6.45 22 6 21.55 6 21C6 20.45 6.45 20 7 20H11V18H7C4.24 18 2 15.76 2 13H22V4Z"/></svg>
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2c2.21 0 4 1.79 4 4v2h2v2H6V8h2V6c0-2.21 1.79-4 4-4zm2 4c0-1.1-.9-2-2-2s-2 .9-2 2v2h4V6zm-8 5h12v3h-1.09l-1.33 8H7.42l-1.33-8H4v-3zm3.11 3l.83 5h8.12l.83-5H7.11z"/></svg>
                         Bathrooms
                     </span>
                     <span class="spec-value" id="apt-baths">0</span>
@@ -300,10 +290,10 @@
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
                 
-                // --- LÓGICA DE STATUS BADGE ---
+                // Status Badge
                 const statusContainer = document.getElementById('apt-status-container');
                 statusContainer.textContent = apt.status;
-                statusContainer.className = 'status-badge'; // Resetear clase base
+                statusContainer.className = 'status-badge'; 
                 
                 if (apt.status === 'Available') {
                     statusContainer.classList.add('badge-available');
