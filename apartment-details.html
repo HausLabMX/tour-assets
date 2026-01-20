@@ -21,7 +21,7 @@
             --status-green: #10b981;
             --status-red: #ef4444;
             --status-yellow: #f59e0b;
-            --disabled-gray: #4b5563; /* Gris para botón vendido */
+            --disabled-gray: #4b5563;
         }
         
         * { box-sizing: border-box; }
@@ -55,7 +55,77 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* --- MEDIA (IZQUIERDA) --- */
+        /* --- INFO (IZQUIERDA) --- */
+        .info-panel {
+            width: 28%; padding: 50px 40px; 
+            overflow-y: auto; background: white;
+            display: flex; flex-direction: column;
+            justify-content: center; 
+            /* Borde a la derecha para separar de la imagen */
+            border-right: 1px solid #eee; 
+            min-width: 350px; 
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            z-index: 2; /* Para asegurar que no quede tapado al animar */
+        }
+        .info-panel.hidden { display: none; }
+
+        /* HEADER */
+        .header-row {
+            display: flex; justify-content: space-between;
+            align-items: flex-start; gap: 10px; margin-bottom: 8px;
+        }
+
+        h1 { 
+            margin: 0; font-size: 1.8rem; font-weight: 800; 
+            letter-spacing: -1px; line-height: 1.1; flex-grow: 1;
+        }
+        
+        h2 { margin: 0 0 25px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
+        
+        .price { font-size: 2.2rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
+
+        /* GRID */
+        .specs-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
+            margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee;
+        }
+        .spec-item { display: flex; flex-direction: column; }
+        .spec-label { 
+            font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); 
+            font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 5px; 
+        }
+        .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
+        .spec-value { font-size: 1.1rem; font-weight: 600; }
+
+        /* STATUS BADGE */
+        .status-badge {
+            display: inline-block; padding: 5px 10px; border-radius: 50px;
+            font-size: 0.7rem; font-weight: 700; color: white;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .badge-available { background-color: var(--status-green); }
+        .badge-sold { background-color: var(--status-red); }
+        .badge-reserved { background-color: var(--status-yellow); }
+
+        .description-box { margin-bottom: 30px; font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
+
+        .actions { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+
+        .btn {
+            display: flex; justify-content: center; align-items: center;
+            padding: 16px; border-radius: 8px;
+            text-decoration: none; font-weight: 600; font-size: 1rem;
+            transition: all 0.2s; cursor: pointer; border: none;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-tour-style { background: var(--yellow-btn); color: white; }
+        .btn-tour-style:hover { background: var(--yellow-hover); transform: translateY(-2px); }
+        .btn.disabled { background: var(--disabled-gray) !important; color: #ffffff !important; pointer-events: none; opacity: 0.8; }
+
+        /* --- MEDIA (DERECHA) --- */
         .image-panel {
             width: 72%; background: var(--bg-light);
             position: relative; overflow: hidden; display: flex;
@@ -104,106 +174,22 @@
         .nav-btn:hover { transform: scale(1.1); background: white; }
 
         .image-counter {
-            position: absolute; top: 25px; left: 25px;
+            position: absolute; top: 25px; right: 25px; /* Contador a la derecha ahora */
             background: rgba(0,0,0,0.6); color: white;
             padding: 6px 14px; border-radius: 20px;
             font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(4px);
         }
 
-        /* --- INFO (DERECHA) --- */
-        .info-panel {
-            width: 28%; padding: 50px 40px; 
-            overflow-y: auto; background: white;
-            display: flex; flex-direction: column;
-            justify-content: center; border-left: 1px solid #eee;
-            min-width: 350px; 
-            transition: transform 0.4s ease, opacity 0.4s ease;
-        }
-        .info-panel.hidden { display: none; }
-
-        /* CABECERA (TÍTULO + STATUS) */
-        .header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        h1 { 
-            margin: 0; 
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            letter-spacing: -1px; 
-            line-height: 1.1;
-            flex-grow: 1;
-        }
-        
-        h2 { margin: 0 0 25px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
-        
-        .price { font-size: 2.2rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
-
-        /* GRID DE 3 COLUMNAS */
-        .specs-grid {
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); /* 3 Columnas */
-            gap: 15px;
-            margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee;
-        }
-        .spec-item { display: flex; flex-direction: column; }
-        
-        .spec-label { 
-            font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); 
-            font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;
-            display: flex; align-items: center; gap: 5px; 
-        }
-        
-        .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
-        .spec-value { font-size: 1.1rem; font-weight: 600; }
-
-        /* STATUS BADGE */
-        .status-badge {
-            display: inline-block; padding: 5px 10px; border-radius: 50px;
-            font-size: 0.7rem; font-weight: 700; color: white;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            white-space: nowrap; flex-shrink: 0;
-        }
-        .badge-available { background-color: var(--status-green); }
-        .badge-sold { background-color: var(--status-red); }
-        .badge-reserved { background-color: var(--status-yellow); }
-
-        .description-box { margin-bottom: 30px; font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
-
-        .actions { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
-
-        .btn {
-            display: flex; justify-content: center; align-items: center;
-            padding: 16px; border-radius: 8px;
-            text-decoration: none; font-weight: 600; font-size: 1rem;
-            transition: all 0.2s; cursor: pointer; border: none;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .btn-tour-style { background: var(--yellow-btn); color: white; }
-        .btn-tour-style:hover { background: var(--yellow-hover); transform: translateY(-2px); }
-        
-        /* Estilo Botón Deshabilitado (Gris oscuro + Texto Blanco) */
-        .btn.disabled { 
-            background: var(--disabled-gray) !important; 
-            color: #ffffff !important; 
-            pointer-events: none; 
-            opacity: 0.8;
-        }
-
         @media (max-width: 900px) {
-            .container { flex-direction: column; border-radius: 0; }
+            /* Column Reverse pone la imagen (que está 2da en HTML) arriba */
+            .container { flex-direction: column-reverse; border-radius: 0; }
             #loading-screen { border-radius: 0; }
             .image-panel { width: 100%; height: 45%; }
             .image-panel.full-screen { height: 100%; } 
             .info-panel { width: 100%; height: 55%; padding: 30px; justify-content: flex-start; }
             .carousel-nav { padding: 0 10px; }
             .nav-btn { width: 40px; height: 40px; }
-            .specs-grid { grid-template-columns: 1fr 1fr 1fr; } /* Mantener 3 col en móvil si caben, sino ajustar a 1fr */
+            .specs-grid { grid-template-columns: 1fr 1fr 1fr; }
         }
     </style>
 </head>
@@ -216,27 +202,9 @@
 
     <div class="container" id="main-content" style="display:none;">
         
-        <div class="image-panel" id="left-panel">
-            <div id="photos-container">
-                <img id="carousel-img" src="" alt="Vista Departamento">
-                <div class="image-counter">
-                    <span id="current-slide">1</span> / <span id="total-slides">1</span>
-                </div>
-                <div class="carousel-nav" id="nav-controls">
-                    <button class="nav-btn" onclick="changeImage(-1)">❮</button>
-                    <button class="nav-btn" onclick="changeImage(1)">❯</button>
-                </div>
-            </div>
-
-            <div id="tour-container" class="tour-overlay">
-                <button class="close-tour-btn" onclick="closeTour()">⬅ Back to Photos</button>
-                <iframe id="tour-frame" src=""></iframe>
-            </div>
-        </div>
-
-        <div class="info-panel" id="right-panel">
+        <!-- PANEL IZQUIERDO: INFO (ID: panel-info) -->
+        <div class="info-panel" id="panel-info">
             
-            <!-- HEADER (TITULO + BADGE) -->
             <div class="header-row">
                 <h1 id="apt-name">Unit ...</h1>
                 <span id="apt-status-container">...</span>
@@ -264,7 +232,7 @@
                     <span class="spec-value" id="apt-beds">0</span>
                 </div>
 
-                <!-- Bathrooms (NUEVO ICONO WC) -->
+                <!-- Bathrooms (WC ICON) -->
                 <div class="spec-item">
                     <span class="spec-label">
                         <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 22h6c1.1 0 2-.9 2-2V9h2V7H5v2h2v11c0 1.1.9 2 2 2zm2-12h2v2h-2v-2zm1-8C9.24 2 7 4.24 7 7h10c0-2.76-2.24-5-5-5z"/></svg>
@@ -279,6 +247,25 @@
             <div class="actions">
                 <a href="#" id="btn-pay" class="btn btn-primary" target="_blank">Reserve Unit</a>
                 <button id="btn-tour" class="btn btn-tour-style" style="display: none;">Virtual Tour 360°</button>
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO: MEDIA (ID: panel-media) -->
+        <div class="image-panel" id="panel-media">
+            <div id="photos-container">
+                <img id="carousel-img" src="" alt="Vista Departamento">
+                <div class="image-counter">
+                    <span id="current-slide">1</span> / <span id="total-slides">1</span>
+                </div>
+                <div class="carousel-nav" id="nav-controls">
+                    <button class="nav-btn" onclick="changeImage(-1)">❮</button>
+                    <button class="nav-btn" onclick="changeImage(1)">❯</button>
+                </div>
+            </div>
+
+            <div id="tour-container" class="tour-overlay">
+                <button class="close-tour-btn" onclick="closeTour()">⬅ Back to Photos</button>
+                <iframe id="tour-frame" src=""></iframe>
             </div>
         </div>
 
@@ -312,14 +299,12 @@
                 if (!data.records.length) throw new Error("No encontrado");
                 const apt = data.records[0].fields;
 
-                // CAMBIO: USAR CAMPO 'name' O DEFAULT AL ID
                 const tituloDisplay = apt.name ? apt.name : `Unit ${apt.apartment_id}`;
                 document.getElementById('apt-name').textContent = tituloDisplay;
-                
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
                 
-                // BADGE
+                // Badge
                 const statusContainer = document.getElementById('apt-status-container');
                 statusContainer.textContent = apt.status;
                 statusContainer.className = 'status-badge'; 
@@ -343,13 +328,12 @@
                 if (apt.status === 'Available') {
                     btnPay.href = apt.payment_url;
                     btnPay.textContent = "Reserve Unit";
-                    btnPay.className = "btn btn-primary"; // Reset clases
-                    btnPay.style.color = ''; // Reset estilo inline
+                    btnPay.className = "btn btn-primary"; 
+                    btnPay.style.color = ''; 
                 } else {
                     btnPay.classList.add('disabled');
                     btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
-                    // Color gris definido en CSS, removemos estilos inline de versiones anteriores
-                    btnPay.style.background = ''; 
+                    btnPay.style.background = ''; // Usa CSS por defecto (Gris)
                     btnPay.style.color = ''; 
                 }
 
@@ -376,13 +360,18 @@
             }
         }
 
+        // --- LÓGICA REVISADA PARA PANELES INTERCAMBIADOS ---
         function openTour(url) {
             const tourContainer = document.getElementById('tour-container');
             const tourFrame = document.getElementById('tour-frame');
-            const leftPanel = document.getElementById('left-panel');
-            const rightPanel = document.getElementById('right-panel');
-            rightPanel.style.display = 'none';
-            leftPanel.classList.add('full-screen');
+            const infoPanel = document.getElementById('panel-info'); // Ahora es Izquierda
+            const mediaPanel = document.getElementById('panel-media'); // Ahora es Derecha
+            
+            // Ocultamos Info
+            infoPanel.style.display = 'none';
+            // Expandimos Media al 100%
+            mediaPanel.classList.add('full-screen');
+
             tourFrame.src = url;
             tourContainer.style.display = 'block';
         }
@@ -390,10 +379,13 @@
         function closeTour() {
             const tourContainer = document.getElementById('tour-container');
             const tourFrame = document.getElementById('tour-frame');
-            const leftPanel = document.getElementById('left-panel');
-            const rightPanel = document.getElementById('right-panel');
-            leftPanel.classList.remove('full-screen');
-            rightPanel.style.display = 'flex';
+            const infoPanel = document.getElementById('panel-info');
+            const mediaPanel = document.getElementById('panel-media');
+            
+            // Restauramos
+            mediaPanel.classList.remove('full-screen');
+            infoPanel.style.display = 'flex';
+
             tourContainer.style.display = 'none';
             tourFrame.src = "";
         }
