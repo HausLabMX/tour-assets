@@ -15,11 +15,11 @@
             --text-gray: #6b7280;
             --bg-light: #f3f4f6;
             
-            /* Colores de Botones */
-            --btn-reserve: #2563eb; /* Azul para diferenciar */
+            /* Botones */
+            --btn-reserve: #2563eb; 
             --btn-reserve-hover: #1d4ed8;
-            --btn-media: #000000;   /* Negro para Galería/Planos */
-            --btn-tour: #f59e0b;    /* Amarillo para Tour */
+            --btn-media: #000000;   
+            --btn-tour: #f59e0b;    
             --btn-tour-hover: #d97706;
 
             /* Estados */
@@ -61,16 +61,26 @@
 
         /* --- INFO (IZQUIERDA) --- */
         .info-panel {
-            width: 28%; padding: 40px 30px; /* Padding ajustado */
+            width: 28%; 
+            /* CAMBIO: Más espacio abajo (70px) para que los botones respiren */
+            padding: 40px 30px 70px 30px; 
             overflow-y: auto; background: white;
             display: flex; flex-direction: column;
+            
+            /* CAMBIO: Esto centra todo el bloque verticalmente */
             justify-content: center; 
+            
             border-right: 1px solid #eee; 
             min-width: 350px; 
             transition: transform 0.4s ease, opacity 0.4s ease;
             z-index: 2;
         }
         .info-panel.hidden { display: none; }
+
+        /* Contenedor de Textos para agruparlos */
+        .info-content-wrapper {
+            margin-bottom: 30px; /* Separación entre textos y botones */
+        }
 
         .header-row {
             display: flex; justify-content: space-between;
@@ -108,15 +118,18 @@
         .badge-sold { background-color: var(--status-red); }
         .badge-reserved { background-color: var(--status-yellow); }
 
-        .description-box { margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
+        .description-box { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
 
         /* --- BOTONES --- */
-        .actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        .actions { 
+            /* Esto empuja los botones hacia abajo si hay mucho espacio, 
+               pero el justify-content:center del padre los mantiene equilibrados */
+            display: flex; flex-direction: column; gap: 10px; 
+        }
         
-        /* Contenedor para botones de medios */
         .media-buttons-row {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Gallery y Plans comparten fila */
+            grid-template-columns: 1fr 1fr; 
             gap: 8px;
         }
 
@@ -127,22 +140,17 @@
             transition: all 0.2s; cursor: pointer; border: none; text-align: center;
         }
 
-        /* 1. Reserve (Azul) */
         .btn-reserve { background: var(--btn-reserve); color: white; width: 100%; }
         .btn-reserve:hover { background: var(--btn-reserve-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
         
-        /* 2. Media Black (Gallery / Plans) */
         .btn-black { background: var(--btn-media); color: white; }
         .btn-black:hover { opacity: 0.8; transform: translateY(-1px); }
         
-        /* 3. Tour (Amarillo) */
-        .btn-tour { 
-            background: var(--btn-tour); color: white; width: 100%;
-        }
+        .btn-tour { background: var(--btn-tour); color: white; width: 100%; }
         .btn-tour:hover { background: var(--btn-tour-hover); transform: translateY(-2px); }
 
-        /* Disabled */
         .btn.disabled { background: var(--disabled-gray) !important; color: #ffffff !important; pointer-events: none; opacity: 0.8; }
+        .btn-active { border: 2px solid white; box-shadow: 0 0 0 2px var(--primary); }
 
         /* --- MEDIA (DERECHA) --- */
         .image-panel {
@@ -199,12 +207,6 @@
             font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(4px);
         }
 
-        /* Estilo para cuando un botón de media está activo */
-        .btn-active {
-            border: 2px solid white;
-            box-shadow: 0 0 0 2px var(--primary);
-        }
-
         @media (max-width: 900px) {
             .container { flex-direction: column-reverse; border-radius: 0; }
             #loading-screen { border-radius: 0; }
@@ -229,57 +231,57 @@
         <!-- PANEL IZQUIERDO: INFO -->
         <div class="info-panel" id="panel-info">
             
-            <div class="header-row">
-                <h1 id="apt-name">Unit ...</h1>
-                <span id="apt-status-container">...</span>
+            <!-- Bloque de Contenido (Agrupado para control de espacio) -->
+            <div class="info-content-wrapper">
+                <div class="header-row">
+                    <h1 id="apt-name">Unit ...</h1>
+                    <span id="apt-status-container">...</span>
+                </div>
+
+                <h2 id="apt-project">Project ...</h2>
+                <div class="price" id="apt-price">$...</div>
+
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <span class="spec-label">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3ZM3 5H21V19H3V5ZM5 7V9H7V7H5ZM9 7V9H11V7H9ZM13 7V9H15V7H13ZM5 11V13H7V11H5ZM9 11V13H11V11H9ZM5 15V17H7V15H5Z"/></svg>
+                            Area
+                        </span>
+                        <span class="spec-value"><span id="apt-area">0</span> m²</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 10V7C20 5.34315 18.6569 4 17 4H7C5.34315 4 4 5.34315 4 7V10C2.34315 10 1 11.3431 1 13V19H3V21H5V19H19V21H21V19H23V13C23 11.3431 21.6569 10 20 10ZM7 6H17C17.5523 6 18 6.44772 18 7V10H6V7C6 6.44772 6.44772 6 7 6ZM21 17H3V13C3 12.4477 3.44772 12 4 12H20C20.5523 12 21 12.4477 21 13V17Z"/></svg>
+                            Bedrooms
+                        </span>
+                        <span class="spec-value" id="apt-beds">0</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">
+                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 17c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.5 9.5h13c.28 0 .5-.22.5-.5 0-1.65-1.35-3-3-3h-2V2H9v4H7c-1.65 0-3 1.35-3 3 0 .28.22.5.5.5zM5 11h14v1H5z"/></svg>
+                            Bathrooms
+                        </span>
+                        <span class="spec-value" id="apt-baths">0</span>
+                    </div>
+                </div>
+
+                <div id="apt-description" class="description-box" style="display: none;"></div>
             </div>
 
-            <h2 id="apt-project">Project ...</h2>
-            <div class="price" id="apt-price">$...</div>
-
-            <div class="specs-grid">
-                <!-- Area -->
-                <div class="spec-item">
-                    <span class="spec-label">
-                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3ZM3 5H21V19H3V5ZM5 7V9H7V7H5ZM9 7V9H11V7H9ZM13 7V9H15V7H13ZM5 11V13H7V11H5ZM9 11V13H11V11H9ZM5 15V17H7V15H5Z"/></svg>
-                        Area
-                    </span>
-                    <span class="spec-value"><span id="apt-area">0</span> m²</span>
-                </div>
-
-                <!-- Bedrooms -->
-                <div class="spec-item">
-                    <span class="spec-label">
-                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 10V7C20 5.34315 18.6569 4 17 4H7C5.34315 4 4 5.34315 4 7V10C2.34315 10 1 11.3431 1 13V19H3V21H5V19H19V21H21V19H23V13C23 11.3431 21.6569 10 20 10ZM7 6H17C17.5523 6 18 6.44772 18 7V10H6V7C6 6.44772 6.44772 6 7 6ZM21 17H3V13C3 12.4477 3.44772 12 4 12H20C20.5523 12 21 12.4477 21 13V17Z"/></svg>
-                        Bedrooms
-                    </span>
-                    <span class="spec-value" id="apt-beds">0</span>
-                </div>
-
-                <!-- Bathrooms -->
-                <div class="spec-item">
-                    <span class="spec-label">
-                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 17c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.5 9.5h13c.28 0 .5-.22.5-.5 0-1.65-1.35-3-3-3h-2V2H9v4H7c-1.65 0-3 1.35-3 3 0 .28.22.5.5.5zM5 11h14v1H5z"/></svg>
-                        Bathrooms
-                    </span>
-                    <span class="spec-value" id="apt-baths">0</span>
-                </div>
-            </div>
-
-            <div id="apt-description" class="description-box" style="display: none;"></div>
-
+            <!-- Bloque de Botones (Pegados abajo) -->
             <div class="actions">
-                <!-- 1. Botón de Reserva (AZUL) -->
-                <a href="#" id="btn-pay" class="btn btn-reserve" target="_blank">Reserve Unit</a>
                 
-                <!-- 2. Botones de Medios (Negros) -->
+                <!-- 1. Media Buttons (Gallery / Plans) -->
                 <div class="media-buttons-row">
                     <button id="btn-gallery" class="btn btn-black" onclick="loadGallery('images')">Gallery</button>
                     <button id="btn-plans" class="btn btn-black" onclick="loadGallery('plans')" style="display:none;">Plans</button>
                 </div>
 
-                <!-- 3. Botón Tour (Amarillo) -->
+                <!-- 2. Tour Virtual -->
                 <button id="btn-tour" class="btn btn-tour" style="display: none;">Virtual Tour 360°</button>
+
+                <!-- 3. Reserva (Ahora hasta abajo) -->
+                <a href="#" id="btn-pay" class="btn btn-reserve" target="_blank">Reserve Unit</a>
             </div>
         </div>
 
@@ -311,9 +313,9 @@
         const BASE_ID = 'appCHPUOlD0TawvoJ';
         const TABLE_NAME = 'Isa Reserve';
 
-        let activeImages = []; // Array actual (fotos o planos)
-        let sourceImages = []; // Fotos originales
-        let sourcePlans = [];  // Planos originales
+        let activeImages = [];
+        let sourceImages = [];
+        let sourcePlans = [];
         let currentIndex = 0;
 
         function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
@@ -339,7 +341,6 @@
                 document.getElementById('apt-project').textContent = apt.project_name || pid || '';
                 document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
                 
-                // Badge
                 const statusContainer = document.getElementById('apt-status-container');
                 statusContainer.textContent = apt.status;
                 statusContainer.className = 'status-badge'; 
@@ -361,7 +362,6 @@
                 const btnTour = document.getElementById('btn-tour');
                 const btnPlans = document.getElementById('btn-plans');
 
-                // Lógica de Reserva
                 if (apt.status === 'Available') {
                     btnPay.href = apt.payment_url;
                     btnPay.textContent = "Reserve Unit";
@@ -369,16 +369,14 @@
                 } else {
                     btnPay.classList.add('disabled');
                     btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
-                    btnPay.style.background = ''; // usa CSS disabled
+                    btnPay.style.background = ''; 
                 }
 
-                // Lógica de Tour
                 if (apt.tour_url) {
-                    btnTour.style.display = 'flex';
+                    btnTour.style.display = 'block';
                     btnTour.onclick = function() { openTour(apt.tour_url); };
                 }
 
-                // Lógica de Planos
                 sourceImages = apt.image || [];
                 sourcePlans = apt.plans || [];
 
@@ -386,7 +384,6 @@
                     btnPlans.style.display = 'block';
                 }
 
-                // Cargar Galería por defecto
                 loadGallery('images');
 
                 document.getElementById('loading-screen').style.display = 'none';
@@ -399,13 +396,11 @@
             }
         }
 
-        // --- SISTEMA DE CAMBIO DE GALERÍA ---
         function loadGallery(type) {
             currentIndex = 0;
             const btnGallery = document.getElementById('btn-gallery');
             const btnPlans = document.getElementById('btn-plans');
 
-            // Resetear estilos botones
             btnGallery.classList.remove('btn-active');
             btnPlans.classList.remove('btn-active');
 
@@ -461,17 +456,14 @@
             const photoData = activeImages[index];
             const anchoPantalla = window.innerWidth;
             let imageUrl = photoData.url;
-            
             if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
                 imageUrl = photoData.thumbnails.large.url;
             } 
-            
             imgElement.style.opacity = 0;
             setTimeout(() => {
                 imgElement.src = imageUrl;
                 imgElement.style.opacity = 1;
             }, 200);
-            
             document.getElementById('current-slide').textContent = index + 1;
             document.getElementById('total-slides').textContent = activeImages.length;
         }
