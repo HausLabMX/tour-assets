@@ -85,7 +85,6 @@
             font-weight: 600; margin-bottom: 5px; display: block;
         }
 
-        /* Estilo del Dropdown */
         #unit-selector {
             width: 100%;
             padding: 10px 12px;
@@ -97,7 +96,7 @@
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             cursor: pointer;
-            appearance: none; /* Quita estilo default navegador */
+            appearance: none; 
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 12px top 50%;
@@ -107,7 +106,8 @@
         #unit-selector:hover { border-color: #9ca3af; }
         #unit-selector:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.1); }
 
-        /* TITULO Y STATUS */
+        .info-content-wrapper { margin-bottom: 30px; }
+
         .title-row {
             display: flex; justify-content: space-between; align-items: center; margin-top: 15px;
         }
@@ -117,7 +117,6 @@
         
         .price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
 
-        /* GRID */
         .specs-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
             margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;
@@ -142,7 +141,6 @@
 
         .description-box { margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
 
-        /* --- BOTONES --- */
         .actions { display: flex; flex-direction: column; gap: 10px; }
         
         .media-buttons-row {
@@ -251,7 +249,7 @@
             <div class="header-top">
                 <label class="selector-label">SELECT UNIT</label>
                 <select id="unit-selector" onchange="changeUnit(this.value)">
-                    <!-- Las opciones se llenan dinámicamente -->
+                    <!-- Se llena con JS -->
                 </select>
             </div>
 
@@ -330,7 +328,7 @@
         const BASE_ID = 'appCHPUOlD0TawvoJ';
         const TABLE_NAME = 'Isa Reserve';
 
-        let allUnitsData = []; // Aquí guardaremos TODOS los departamentos
+        let allUnitsData = [];
         let currentUnit = {};
         
         let activeImages = [];
@@ -344,25 +342,27 @@
             const pid = getParam('project');
             const aid = getParam('id');
 
-            // 1. Descargamos TODO el proyecto, no solo un depto
-            // Si hay project_id, filtramos por proyecto. Si no, descargamos todo.
-            const filter = pid ? `{project_id}='${pid}'` : '';
-            
-            // Si no hay proyecto, al menos aseguramos que descargue el ID que pedimos
-            const finalFilter = filter ? filter : `{apartment_id}='${aid}'`;
+            // Lógica de Filtro: Si hay proyecto, filtra por proyecto. Si no, descarga todo.
+            let filter = '';
+            if (pid) {
+                filter = `?filterByFormula={project_id}='${pid}'`;
+            }
 
-            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(finalFilter)}`;
+            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}${filter}`;
 
             try {
                 const response = await fetch(url, { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } });
                 const data = await response.json();
                 
-                if (!data.records.length) throw new Error("No data found");
+                if (!data.records || data.records.length === 0) throw new Error("No data found");
                 
-                // Guardamos todos los datos
                 allUnitsData = data.records;
 
-                // 2. Llenar el Dropdown
+                // Ordenamos por ID (alfanumérico) para que salgan en orden: 1, 2, 10...
+                allUnitsData.sort((a, b) => {
+                    return a.fields.apartment_id.localeCompare(b.fields.apartment_id, undefined, {numeric: true, sensitivity: 'base'});
+                });
+
                 populateSelector(aid);
 
             } catch (err) {
@@ -372,31 +372,27 @@
             }
         }
 
-        // --- LÓGICA DEL SELECTOR ---
         function populateSelector(initialId) {
             const selector = document.getElementById('unit-selector');
-            selector.innerHTML = ""; // Limpiar
-
-            // Ordenar por ID para que se vea bonito (opcional, requiere lógica extra si son alfanuméricos)
-            allUnitsData.sort((a, b) => a.fields.apartment_id.localeCompare(b.fields.apartment_id));
+            selector.innerHTML = ""; 
 
             let foundInitial = false;
 
             allUnitsData.forEach(record => {
                 const opt = document.createElement('option');
-                opt.value = record.fields.apartment_id; // El valor es el ID
-                // El texto es el NOMBRE (si existe) o el ID
+                opt.value = record.fields.apartment_id; 
+                // Texto del menú: Nombre si existe, si no "Unit X"
                 opt.text = record.fields.name ? record.fields.name : `Unit ${record.fields.apartment_id}`;
                 selector.appendChild(opt);
 
-                if (record.fields.apartment_id === initialId) {
+                if (String(record.fields.apartment_id) === String(initialId)) {
                     selector.value = initialId;
                     foundInitial = true;
-                    renderUnit(record); // Renderizar el inicial
+                    renderUnit(record);
                 }
             });
 
-            // Si el ID de la URL no está en la lista (raro), renderizamos el primero
+            // Si el ID del link no existe (o no se puso), cargamos el primero de la lista
             if (!foundInitial && allUnitsData.length > 0) {
                 selector.value = allUnitsData[0].fields.apartment_id;
                 renderUnit(allUnitsData[0]);
@@ -406,21 +402,18 @@
             document.getElementById('main-content').style.display = 'flex';
         }
 
-        // Esta función se llama cuando cambias el dropdown
         function changeUnit(newId) {
-            const selectedRecord = allUnitsData.find(r => r.fields.apartment_id === newId);
+            const selectedRecord = allUnitsData.find(r => String(r.fields.apartment_id) === String(newId));
             if (selectedRecord) {
-                // Pequeño efecto de carga o transición si quieres, aquí es directo
                 renderUnit(selectedRecord);
             }
         }
 
-        // --- RENDERIZADO DE LA FICHA (Antes estaba en init) ---
         function renderUnit(record) {
             const apt = record.fields;
             currentUnit = apt;
 
-            // Textos
+            // Datos
             const tituloDisplay = apt.name ? apt.name : `Unit ${apt.apartment_id}`;
             document.getElementById('apt-name').textContent = tituloDisplay;
             document.getElementById('apt-project').textContent = apt.project_name || '';
@@ -451,11 +444,10 @@
             const btnTour = document.getElementById('btn-tour');
             const btnPlans = document.getElementById('btn-plans');
 
-            // Resetear botones media
+            // Reset visibilidad botones media
             btnPlans.style.display = 'none';
             btnTour.style.display = 'none';
 
-            // Estado Reserva
             if (apt.status === 'Available') {
                 btnPay.href = apt.payment_url;
                 btnPay.textContent = "Reserve Unit";
@@ -466,13 +458,11 @@
                 btnPay.style.background = ''; 
             }
 
-            // Tour
             if (apt.tour_url) {
                 btnTour.style.display = 'block';
                 btnTour.onclick = function() { openTour(apt.tour_url); };
             }
 
-            // Imágenes y Planos
             sourceImages = apt.image || [];
             sourcePlans = apt.plans || [];
 
@@ -480,13 +470,11 @@
                 btnPlans.style.display = 'block';
             }
 
-            // Resetear vista a Galería (Siempre empezar en fotos al cambiar de unidad)
-            // IMPORTANTE: Resetear iframe si estaba abierto
+            // Reiniciar a Galería
             closeTour(); 
             loadGallery('images');
         }
 
-        // --- RESTO DE FUNCIONES (Iguales) ---
         function loadGallery(type) {
             currentIndex = 0;
             const btnGallery = document.getElementById('btn-gallery');
