@@ -62,7 +62,7 @@
         /* --- INFO (IZQUIERDA) --- */
         .info-panel {
             width: 28%; 
-            padding: 40px 30px 70px 30px; 
+            padding: 40px 30px 60px 30px; 
             overflow-y: auto; background: white;
             display: flex; flex-direction: column;
             justify-content: center; 
@@ -73,21 +73,59 @@
         }
         .info-panel.hidden { display: none; }
 
-        /* HEADER & SELECTOR */
-        .header-top {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
+        .info-content-wrapper { margin-bottom: 20px; }
+
+        /* HEADER & TITLE */
+        .header-row {
+            display: flex; justify-content: space-between;
+            align-items: flex-start; gap: 10px; margin-bottom: 5px;
+        }
+
+        h1 { 
+            margin: 0; 
+            /* CAMBIO: Tamaño duplicado */
+            font-size: 3.5rem; 
+            font-weight: 800; 
+            letter-spacing: -2px; 
+            line-height: 1; 
+            flex-grow: 1;
+        }
+        
+        h2 { margin: 5px 0 20px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
+        
+        .price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
+
+        /* SPECS GRID */
+        .specs-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            margin-bottom: 25px; padding-bottom: 25px; 
+            /* Quitamos el borde aquí porque ahora el selector hará de separador */
+            /* border-bottom: 1px solid #eee; */ 
+        }
+        .spec-item { display: flex; flex-direction: column; }
+        .spec-label { 
+            font-size: 0.65rem; text-transform: uppercase; color: var(--text-gray); 
+            font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 4px; 
+        }
+        .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
+        .spec-value { font-size: 1rem; font-weight: 600; }
+
+        /* SELECTOR (NUEVA POSICIÓN) */
+        .selector-container {
+            margin-bottom: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee; /* Separador visual */
         }
 
         .selector-label {
-            font-size: 0.75rem; color: var(--text-gray); 
-            font-weight: 600; margin-bottom: 5px; display: block;
+            font-size: 0.7rem; color: var(--text-gray); 
+            font-weight: 700; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px;
         }
 
         #unit-selector {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 12px;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
             font-weight: 600;
@@ -106,41 +144,20 @@
         #unit-selector:hover { border-color: #9ca3af; }
         #unit-selector:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.1); }
 
-        .info-content-wrapper { margin-bottom: 30px; }
-
-        .title-row {
-            display: flex; justify-content: space-between; align-items: center; margin-top: 15px;
-        }
-        
-        h1 { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
-        h2 { margin: 5px 0 20px 0; font-size: 0.9rem; color: var(--text-gray); font-weight: 400; }
-        
-        .price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
-
-        .specs-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-            margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;
-        }
-        .spec-item { display: flex; flex-direction: column; }
-        .spec-label { 
-            font-size: 0.65rem; text-transform: uppercase; color: var(--text-gray); 
-            font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px;
-            display: flex; align-items: center; gap: 4px; 
-        }
-        .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
-        .spec-value { font-size: 1rem; font-weight: 600; }
-
+        /* STATUS BADGE */
         .status-badge {
-            display: inline-block; padding: 4px 10px; border-radius: 50px;
-            font-size: 0.65rem; font-weight: 700; color: white;
+            display: inline-block; padding: 5px 12px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 700; color: white;
             text-transform: uppercase; letter-spacing: 0.5px;
+            white-space: nowrap; flex-shrink: 0; margin-top: 8px; /* Ajuste visual con titulo grande */
         }
         .badge-available { background-color: var(--status-green); }
         .badge-sold { background-color: var(--status-red); }
         .badge-reserved { background-color: var(--status-yellow); }
 
-        .description-box { margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
+        .description-box { margin-bottom: 20px; font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
 
+        /* --- BOTONES --- */
         .actions { display: flex; flex-direction: column; gap: 10px; }
         
         .media-buttons-row {
@@ -245,17 +262,10 @@
         <!-- PANEL IZQUIERDO: INFO -->
         <div class="info-panel" id="panel-info">
             
-            <!-- SELECTOR DE UNIDADES -->
-            <div class="header-top">
-                <label class="selector-label">SELECT UNIT</label>
-                <select id="unit-selector" onchange="changeUnit(this.value)">
-                    <!-- Se llena con JS -->
-                </select>
-            </div>
-
-            <!-- Contenido Dinámico -->
             <div class="info-content-wrapper">
-                <div class="title-row">
+                
+                <!-- Titulo y Status -->
+                <div class="header-row">
                     <h1 id="apt-name">Unit ...</h1>
                     <span id="apt-status-container">...</span>
                 </div>
@@ -263,6 +273,7 @@
                 <h2 id="apt-project">Project ...</h2>
                 <div class="price" id="apt-price">$...</div>
 
+                <!-- Specs -->
                 <div class="specs-grid">
                     <div class="spec-item">
                         <span class="spec-label">
@@ -287,9 +298,19 @@
                     </div>
                 </div>
 
+                <!-- SELECTOR (Reubicado Aquí) -->
+                <div class="selector-container">
+                    <label class="selector-label">CHANGE UNIT</label>
+                    <select id="unit-selector" onchange="changeUnit(this.value)">
+                        <!-- Se llena con JS -->
+                    </select>
+                </div>
+
+                <!-- Descripción -->
                 <div id="apt-description" class="description-box" style="display: none;"></div>
             </div>
 
+            <!-- Botones -->
             <div class="actions">
                 <div class="media-buttons-row">
                     <button id="btn-gallery" class="btn btn-black" onclick="loadGallery('images')">Gallery</button>
@@ -342,7 +363,6 @@
             const pid = getParam('project');
             const aid = getParam('id');
 
-            // Lógica de Filtro: Si hay proyecto, filtra por proyecto. Si no, descarga todo.
             let filter = '';
             if (pid) {
                 filter = `?filterByFormula={project_id}='${pid}'`;
@@ -358,7 +378,6 @@
                 
                 allUnitsData = data.records;
 
-                // Ordenamos por ID (alfanumérico) para que salgan en orden: 1, 2, 10...
                 allUnitsData.sort((a, b) => {
                     return a.fields.apartment_id.localeCompare(b.fields.apartment_id, undefined, {numeric: true, sensitivity: 'base'});
                 });
@@ -381,7 +400,6 @@
             allUnitsData.forEach(record => {
                 const opt = document.createElement('option');
                 opt.value = record.fields.apartment_id; 
-                // Texto del menú: Nombre si existe, si no "Unit X"
                 opt.text = record.fields.name ? record.fields.name : `Unit ${record.fields.apartment_id}`;
                 selector.appendChild(opt);
 
@@ -392,7 +410,6 @@
                 }
             });
 
-            // Si el ID del link no existe (o no se puso), cargamos el primero de la lista
             if (!foundInitial && allUnitsData.length > 0) {
                 selector.value = allUnitsData[0].fields.apartment_id;
                 renderUnit(allUnitsData[0]);
@@ -413,13 +430,11 @@
             const apt = record.fields;
             currentUnit = apt;
 
-            // Datos
             const tituloDisplay = apt.name ? apt.name : `Unit ${apt.apartment_id}`;
             document.getElementById('apt-name').textContent = tituloDisplay;
             document.getElementById('apt-project').textContent = apt.project_name || '';
             document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
             
-            // Badge
             const statusContainer = document.getElementById('apt-status-container');
             statusContainer.textContent = apt.status;
             statusContainer.className = 'status-badge'; 
@@ -427,24 +442,20 @@
             else if (apt.status === 'Reserved') statusContainer.classList.add('badge-reserved');
             else statusContainer.classList.add('badge-sold');
 
-            // Specs
             document.getElementById('apt-area').textContent = apt.area_total || 0;
             document.getElementById('apt-beds').textContent = apt.num_bedrooms || 0;
             document.getElementById('apt-baths').textContent = apt.num_bathrooms || 0;
 
-            // Desc
             const descBox = document.getElementById('apt-description');
             if (apt.description) {
                 descBox.textContent = apt.description;
                 descBox.style.display = 'block';
             } else { descBox.style.display = 'none'; }
 
-            // Botones
             const btnPay = document.getElementById('btn-pay');
             const btnTour = document.getElementById('btn-tour');
             const btnPlans = document.getElementById('btn-plans');
 
-            // Reset visibilidad botones media
             btnPlans.style.display = 'none';
             btnTour.style.display = 'none';
 
@@ -470,7 +481,6 @@
                 btnPlans.style.display = 'block';
             }
 
-            // Reiniciar a Galería
             closeTour(); 
             loadGallery('images');
         }
