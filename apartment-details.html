@@ -14,10 +14,15 @@
             --primary: #1a1a1a; 
             --text-gray: #6b7280;
             --bg-light: #f3f4f6;
-            --yellow-btn: #f59e0b;
-            --yellow-hover: #d97706;
             
-            /* Colores de Estado */
+            /* Colores de Botones */
+            --btn-reserve: #2563eb; /* Azul para diferenciar */
+            --btn-reserve-hover: #1d4ed8;
+            --btn-media: #000000;   /* Negro para Galería/Planos */
+            --btn-tour: #f59e0b;    /* Amarillo para Tour */
+            --btn-tour-hover: #d97706;
+
+            /* Estados */
             --status-green: #10b981;
             --status-red: #ef4444;
             --status-yellow: #f59e0b;
@@ -31,8 +36,7 @@
             margin: 0; padding: 0; 
             background-color: transparent; 
             color: var(--primary); 
-            height: 100vh; 
-            overflow: hidden; 
+            height: 100vh; overflow: hidden; 
         }
 
         .container { 
@@ -57,19 +61,17 @@
 
         /* --- INFO (IZQUIERDA) --- */
         .info-panel {
-            width: 28%; padding: 50px 40px; 
+            width: 28%; padding: 40px 30px; /* Padding ajustado */
             overflow-y: auto; background: white;
             display: flex; flex-direction: column;
             justify-content: center; 
-            /* Borde a la derecha para separar de la imagen */
             border-right: 1px solid #eee; 
             min-width: 350px; 
             transition: transform 0.4s ease, opacity 0.4s ease;
-            z-index: 2; /* Para asegurar que no quede tapado al animar */
+            z-index: 2;
         }
         .info-panel.hidden { display: none; }
 
-        /* HEADER */
         .header-row {
             display: flex; justify-content: space-between;
             align-items: flex-start; gap: 10px; margin-bottom: 8px;
@@ -79,26 +81,23 @@
             margin: 0; font-size: 1.8rem; font-weight: 800; 
             letter-spacing: -1px; line-height: 1.1; flex-grow: 1;
         }
+        h2 { margin: 0 0 20px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
         
-        h2 { margin: 0 0 25px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
-        
-        .price { font-size: 2.2rem; font-weight: 700; color: var(--primary); margin-bottom: 30px; }
+        .price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
 
-        /* GRID */
         .specs-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
-            margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #eee;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;
         }
         .spec-item { display: flex; flex-direction: column; }
         .spec-label { 
-            font-size: 0.7rem; text-transform: uppercase; color: var(--text-gray); 
-            font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;
-            display: flex; align-items: center; gap: 5px; 
+            font-size: 0.65rem; text-transform: uppercase; color: var(--text-gray); 
+            font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 4px; 
         }
         .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
-        .spec-value { font-size: 1.1rem; font-weight: 600; }
+        .spec-value { font-size: 1rem; font-weight: 600; }
 
-        /* STATUS BADGE */
         .status-badge {
             display: inline-block; padding: 5px 10px; border-radius: 50px;
             font-size: 0.7rem; font-weight: 700; color: white;
@@ -109,20 +108,40 @@
         .badge-sold { background-color: var(--status-red); }
         .badge-reserved { background-color: var(--status-yellow); }
 
-        .description-box { margin-bottom: 30px; font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
+        .description-box { margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
 
-        .actions { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+        /* --- BOTONES --- */
+        .actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        /* Contenedor para botones de medios */
+        .media-buttons-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Gallery y Plans comparten fila */
+            gap: 8px;
+        }
 
         .btn {
             display: flex; justify-content: center; align-items: center;
-            padding: 16px; border-radius: 8px;
-            text-decoration: none; font-weight: 600; font-size: 1rem;
-            transition: all 0.2s; cursor: pointer; border: none;
+            padding: 14px; border-radius: 8px;
+            text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            transition: all 0.2s; cursor: pointer; border: none; text-align: center;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .btn-tour-style { background: var(--yellow-btn); color: white; }
-        .btn-tour-style:hover { background: var(--yellow-hover); transform: translateY(-2px); }
+
+        /* 1. Reserve (Azul) */
+        .btn-reserve { background: var(--btn-reserve); color: white; width: 100%; }
+        .btn-reserve:hover { background: var(--btn-reserve-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+        
+        /* 2. Media Black (Gallery / Plans) */
+        .btn-black { background: var(--btn-media); color: white; }
+        .btn-black:hover { opacity: 0.8; transform: translateY(-1px); }
+        
+        /* 3. Tour (Amarillo) */
+        .btn-tour { 
+            background: var(--btn-tour); color: white; width: 100%;
+        }
+        .btn-tour:hover { background: var(--btn-tour-hover); transform: translateY(-2px); }
+
+        /* Disabled */
         .btn.disabled { background: var(--disabled-gray) !important; color: #ffffff !important; pointer-events: none; opacity: 0.8; }
 
         /* --- MEDIA (DERECHA) --- */
@@ -174,19 +193,24 @@
         .nav-btn:hover { transform: scale(1.1); background: white; }
 
         .image-counter {
-            position: absolute; top: 25px; right: 25px; /* Contador a la derecha ahora */
+            position: absolute; top: 25px; right: 25px;
             background: rgba(0,0,0,0.6); color: white;
             padding: 6px 14px; border-radius: 20px;
             font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(4px);
         }
 
+        /* Estilo para cuando un botón de media está activo */
+        .btn-active {
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
         @media (max-width: 900px) {
-            /* Column Reverse pone la imagen (que está 2da en HTML) arriba */
             .container { flex-direction: column-reverse; border-radius: 0; }
             #loading-screen { border-radius: 0; }
-            .image-panel { width: 100%; height: 45%; }
+            .image-panel { width: 100%; height: 40%; }
             .image-panel.full-screen { height: 100%; } 
-            .info-panel { width: 100%; height: 55%; padding: 30px; justify-content: flex-start; }
+            .info-panel { width: 100%; height: 60%; padding: 25px; justify-content: flex-start; }
             .carousel-nav { padding: 0 10px; }
             .nav-btn { width: 40px; height: 40px; }
             .specs-grid { grid-template-columns: 1fr 1fr 1fr; }
@@ -202,7 +226,7 @@
 
     <div class="container" id="main-content" style="display:none;">
         
-        <!-- PANEL IZQUIERDO: INFO (ID: panel-info) -->
+        <!-- PANEL IZQUIERDO: INFO -->
         <div class="info-panel" id="panel-info">
             
             <div class="header-row">
@@ -232,10 +256,10 @@
                     <span class="spec-value" id="apt-beds">0</span>
                 </div>
 
-                <!-- Bathrooms (WC ICON) -->
+                <!-- Bathrooms -->
                 <div class="spec-item">
                     <span class="spec-label">
-                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9 22h6c1.1 0 2-.9 2-2V9h2V7H5v2h2v11c0 1.1.9 2 2 2zm2-12h2v2h-2v-2zm1-8C9.24 2 7 4.24 7 7h10c0-2.76-2.24-5-5-5z"/></svg>
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 17c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.5 9.5h13c.28 0 .5-.22.5-.5 0-1.65-1.35-3-3-3h-2V2H9v4H7c-1.65 0-3 1.35-3 3 0 .28.22.5.5.5zM5 11h14v1H5z"/></svg>
                         Bathrooms
                     </span>
                     <span class="spec-value" id="apt-baths">0</span>
@@ -245,12 +269,21 @@
             <div id="apt-description" class="description-box" style="display: none;"></div>
 
             <div class="actions">
-                <a href="#" id="btn-pay" class="btn btn-primary" target="_blank">Reserve Unit</a>
-                <button id="btn-tour" class="btn btn-tour-style" style="display: none;">Virtual Tour 360°</button>
+                <!-- 1. Botón de Reserva (AZUL) -->
+                <a href="#" id="btn-pay" class="btn btn-reserve" target="_blank">Reserve Unit</a>
+                
+                <!-- 2. Botones de Medios (Negros) -->
+                <div class="media-buttons-row">
+                    <button id="btn-gallery" class="btn btn-black" onclick="loadGallery('images')">Gallery</button>
+                    <button id="btn-plans" class="btn btn-black" onclick="loadGallery('plans')" style="display:none;">Plans</button>
+                </div>
+
+                <!-- 3. Botón Tour (Amarillo) -->
+                <button id="btn-tour" class="btn btn-tour" style="display: none;">Virtual Tour 360°</button>
             </div>
         </div>
 
-        <!-- PANEL DERECHO: MEDIA (ID: panel-media) -->
+        <!-- PANEL DERECHO: MEDIA -->
         <div class="image-panel" id="panel-media">
             <div id="photos-container">
                 <img id="carousel-img" src="" alt="Vista Departamento">
@@ -264,7 +297,7 @@
             </div>
 
             <div id="tour-container" class="tour-overlay">
-                <button class="close-tour-btn" onclick="closeTour()">⬅ Back to Photos</button>
+                <button class="close-tour-btn" onclick="closeTour()">⬅ Back to Details</button>
                 <iframe id="tour-frame" src=""></iframe>
             </div>
         </div>
@@ -278,7 +311,9 @@
         const BASE_ID = 'appCHPUOlD0TawvoJ';
         const TABLE_NAME = 'Isa Reserve';
 
-        let currentImages = [];
+        let activeImages = []; // Array actual (fotos o planos)
+        let sourceImages = []; // Fotos originales
+        let sourcePlans = [];  // Planos originales
         let currentIndex = 0;
 
         function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
@@ -324,31 +359,35 @@
 
                 const btnPay = document.getElementById('btn-pay');
                 const btnTour = document.getElementById('btn-tour');
+                const btnPlans = document.getElementById('btn-plans');
 
+                // Lógica de Reserva
                 if (apt.status === 'Available') {
                     btnPay.href = apt.payment_url;
                     btnPay.textContent = "Reserve Unit";
-                    btnPay.className = "btn btn-primary"; 
-                    btnPay.style.color = ''; 
+                    btnPay.className = "btn btn-reserve"; 
                 } else {
                     btnPay.classList.add('disabled');
                     btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
-                    btnPay.style.background = ''; // Usa CSS por defecto (Gris)
-                    btnPay.style.color = ''; 
+                    btnPay.style.background = ''; // usa CSS disabled
                 }
 
+                // Lógica de Tour
                 if (apt.tour_url) {
                     btnTour.style.display = 'flex';
                     btnTour.onclick = function() { openTour(apt.tour_url); };
                 }
 
-                if (apt.image && apt.image.length > 0) {
-                    currentImages = apt.image;
-                    updateCarousel(0);
-                } else {
-                    document.getElementById('carousel-img').src = 'https://via.placeholder.com/800x600?text=No+Image';
-                    document.getElementById('nav-controls').style.display = 'none';
+                // Lógica de Planos
+                sourceImages = apt.image || [];
+                sourcePlans = apt.plans || [];
+
+                if (sourcePlans.length > 0) {
+                    btnPlans.style.display = 'block';
                 }
+
+                // Cargar Galería por defecto
+                loadGallery('images');
 
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'flex';
@@ -360,18 +399,41 @@
             }
         }
 
-        // --- LÓGICA REVISADA PARA PANELES INTERCAMBIADOS ---
+        // --- SISTEMA DE CAMBIO DE GALERÍA ---
+        function loadGallery(type) {
+            currentIndex = 0;
+            const btnGallery = document.getElementById('btn-gallery');
+            const btnPlans = document.getElementById('btn-plans');
+
+            // Resetear estilos botones
+            btnGallery.classList.remove('btn-active');
+            btnPlans.classList.remove('btn-active');
+
+            if (type === 'images') {
+                activeImages = sourceImages;
+                btnGallery.classList.add('btn-active');
+            } else {
+                activeImages = sourcePlans;
+                btnPlans.classList.add('btn-active');
+            }
+
+            if (activeImages.length > 0) {
+                updateCarousel(0);
+                document.getElementById('nav-controls').style.display = (activeImages.length > 1) ? 'flex' : 'none';
+                document.getElementById('carousel-img').style.display = 'block';
+            } else {
+                document.getElementById('carousel-img').src = 'https://via.placeholder.com/800x600?text=No+Image';
+                document.getElementById('nav-controls').style.display = 'none';
+            }
+        }
+
         function openTour(url) {
             const tourContainer = document.getElementById('tour-container');
             const tourFrame = document.getElementById('tour-frame');
-            const infoPanel = document.getElementById('panel-info'); // Ahora es Izquierda
-            const mediaPanel = document.getElementById('panel-media'); // Ahora es Derecha
-            
-            // Ocultamos Info
+            const infoPanel = document.getElementById('panel-info');
+            const mediaPanel = document.getElementById('panel-media');
             infoPanel.style.display = 'none';
-            // Expandimos Media al 100%
             mediaPanel.classList.add('full-screen');
-
             tourFrame.src = url;
             tourContainer.style.display = 'block';
         }
@@ -381,38 +443,37 @@
             const tourFrame = document.getElementById('tour-frame');
             const infoPanel = document.getElementById('panel-info');
             const mediaPanel = document.getElementById('panel-media');
-            
-            // Restauramos
             mediaPanel.classList.remove('full-screen');
             infoPanel.style.display = 'flex';
-
             tourContainer.style.display = 'none';
             tourFrame.src = "";
         }
 
         function changeImage(direction) {
             currentIndex += direction;
-            if (currentIndex >= currentImages.length) currentIndex = 0;
-            if (currentIndex < 0) currentIndex = currentImages.length - 1;
+            if (currentIndex >= activeImages.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = activeImages.length - 1;
             updateCarousel(currentIndex);
         }
 
         function updateCarousel(index) {
             const imgElement = document.getElementById('carousel-img');
-            const photoData = currentImages[index];
+            const photoData = activeImages[index];
             const anchoPantalla = window.innerWidth;
             let imageUrl = photoData.url;
+            
             if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
                 imageUrl = photoData.thumbnails.large.url;
             } 
+            
             imgElement.style.opacity = 0;
             setTimeout(() => {
                 imgElement.src = imageUrl;
                 imgElement.style.opacity = 1;
             }, 200);
+            
             document.getElementById('current-slide').textContent = index + 1;
-            document.getElementById('total-slides').textContent = currentImages.length;
-            if (currentImages.length <= 1) document.getElementById('nav-controls').style.display = 'none';
+            document.getElementById('total-slides').textContent = activeImages.length;
         }
 
         init();
