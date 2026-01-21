@@ -62,14 +62,10 @@
         /* --- INFO (IZQUIERDA) --- */
         .info-panel {
             width: 28%; 
-            /* CAMBIO: Más espacio abajo (70px) para que los botones respiren */
             padding: 40px 30px 70px 30px; 
             overflow-y: auto; background: white;
             display: flex; flex-direction: column;
-            
-            /* CAMBIO: Esto centra todo el bloque verticalmente */
             justify-content: center; 
-            
             border-right: 1px solid #eee; 
             min-width: 350px; 
             transition: transform 0.4s ease, opacity 0.4s ease;
@@ -77,24 +73,51 @@
         }
         .info-panel.hidden { display: none; }
 
-        /* Contenedor de Textos para agruparlos */
-        .info-content-wrapper {
-            margin-bottom: 30px; /* Separación entre textos y botones */
+        /* HEADER & SELECTOR */
+        .header-top {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
         }
 
-        .header-row {
-            display: flex; justify-content: space-between;
-            align-items: flex-start; gap: 10px; margin-bottom: 8px;
+        .selector-label {
+            font-size: 0.75rem; color: var(--text-gray); 
+            font-weight: 600; margin-bottom: 5px; display: block;
         }
 
-        h1 { 
-            margin: 0; font-size: 1.8rem; font-weight: 800; 
-            letter-spacing: -1px; line-height: 1.1; flex-grow: 1;
+        /* Estilo del Dropdown */
+        #unit-selector {
+            width: 100%;
+            padding: 10px 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+            background-color: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            appearance: none; /* Quita estilo default navegador */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px top 50%;
+            background-size: 10px auto;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        h2 { margin: 0 0 20px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
+        #unit-selector:hover { border-color: #9ca3af; }
+        #unit-selector:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.1); }
+
+        /* TITULO Y STATUS */
+        .title-row {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 15px;
+        }
+        
+        h1 { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        h2 { margin: 5px 0 20px 0; font-size: 0.9rem; color: var(--text-gray); font-weight: 400; }
         
         .price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
 
+        /* GRID */
         .specs-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
             margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;
@@ -109,28 +132,21 @@
         .spec-value { font-size: 1rem; font-weight: 600; }
 
         .status-badge {
-            display: inline-block; padding: 5px 10px; border-radius: 50px;
-            font-size: 0.7rem; font-weight: 700; color: white;
+            display: inline-block; padding: 4px 10px; border-radius: 50px;
+            font-size: 0.65rem; font-weight: 700; color: white;
             text-transform: uppercase; letter-spacing: 0.5px;
-            white-space: nowrap; flex-shrink: 0;
         }
         .badge-available { background-color: var(--status-green); }
         .badge-sold { background-color: var(--status-red); }
         .badge-reserved { background-color: var(--status-yellow); }
 
-        .description-box { font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
+        .description-box { margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
 
         /* --- BOTONES --- */
-        .actions { 
-            /* Esto empuja los botones hacia abajo si hay mucho espacio, 
-               pero el justify-content:center del padre los mantiene equilibrados */
-            display: flex; flex-direction: column; gap: 10px; 
-        }
+        .actions { display: flex; flex-direction: column; gap: 10px; }
         
         .media-buttons-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 8px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
         }
 
         .btn {
@@ -223,7 +239,7 @@
 
     <div id="loading-screen">
         <div class="spinner"></div>
-        <div style="color: #666; font-size: 0.9rem;">Loading...</div>
+        <div style="color: #666; font-size: 0.9rem;">Loading inventory...</div>
     </div>
 
     <div class="container" id="main-content" style="display:none;">
@@ -231,9 +247,17 @@
         <!-- PANEL IZQUIERDO: INFO -->
         <div class="info-panel" id="panel-info">
             
-            <!-- Bloque de Contenido (Agrupado para control de espacio) -->
+            <!-- SELECTOR DE UNIDADES -->
+            <div class="header-top">
+                <label class="selector-label">SELECT UNIT</label>
+                <select id="unit-selector" onchange="changeUnit(this.value)">
+                    <!-- Las opciones se llenan dinámicamente -->
+                </select>
+            </div>
+
+            <!-- Contenido Dinámico -->
             <div class="info-content-wrapper">
-                <div class="header-row">
+                <div class="title-row">
                     <h1 id="apt-name">Unit ...</h1>
                     <span id="apt-status-container">...</span>
                 </div>
@@ -268,19 +292,12 @@
                 <div id="apt-description" class="description-box" style="display: none;"></div>
             </div>
 
-            <!-- Bloque de Botones (Pegados abajo) -->
             <div class="actions">
-                
-                <!-- 1. Media Buttons (Gallery / Plans) -->
                 <div class="media-buttons-row">
                     <button id="btn-gallery" class="btn btn-black" onclick="loadGallery('images')">Gallery</button>
                     <button id="btn-plans" class="btn btn-black" onclick="loadGallery('plans')" style="display:none;">Plans</button>
                 </div>
-
-                <!-- 2. Tour Virtual -->
                 <button id="btn-tour" class="btn btn-tour" style="display: none;">Virtual Tour 360°</button>
-
-                <!-- 3. Reserva (Ahora hasta abajo) -->
                 <a href="#" id="btn-pay" class="btn btn-reserve" target="_blank">Reserve Unit</a>
             </div>
         </div>
@@ -313,6 +330,9 @@
         const BASE_ID = 'appCHPUOlD0TawvoJ';
         const TABLE_NAME = 'Isa Reserve';
 
+        let allUnitsData = []; // Aquí guardaremos TODOS los departamentos
+        let currentUnit = {};
+        
         let activeImages = [];
         let sourceImages = [];
         let sourcePlans = [];
@@ -324,70 +344,26 @@
             const pid = getParam('project');
             const aid = getParam('id');
 
-            if (!aid) return;
+            // 1. Descargamos TODO el proyecto, no solo un depto
+            // Si hay project_id, filtramos por proyecto. Si no, descargamos todo.
+            const filter = pid ? `{project_id}='${pid}'` : '';
+            
+            // Si no hay proyecto, al menos aseguramos que descargue el ID que pedimos
+            const finalFilter = filter ? filter : `{apartment_id}='${aid}'`;
 
-            const filter = pid ? `AND({project_id}='${pid}', {apartment_id}='${aid}')` : `{apartment_id}='${aid}'`;
-            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(filter)}`;
+            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(finalFilter)}`;
 
             try {
                 const response = await fetch(url, { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } });
                 const data = await response.json();
                 
-                if (!data.records.length) throw new Error("No encontrado");
-                const apt = data.records[0].fields;
-
-                const tituloDisplay = apt.name ? apt.name : `Unit ${apt.apartment_id}`;
-                document.getElementById('apt-name').textContent = tituloDisplay;
-                document.getElementById('apt-project').textContent = apt.project_name || pid || '';
-                document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
+                if (!data.records.length) throw new Error("No data found");
                 
-                const statusContainer = document.getElementById('apt-status-container');
-                statusContainer.textContent = apt.status;
-                statusContainer.className = 'status-badge'; 
-                if (apt.status === 'Available') statusContainer.classList.add('badge-available');
-                else if (apt.status === 'Reserved') statusContainer.classList.add('badge-reserved');
-                else statusContainer.classList.add('badge-sold');
+                // Guardamos todos los datos
+                allUnitsData = data.records;
 
-                document.getElementById('apt-area').textContent = apt.area_total;
-                document.getElementById('apt-beds').textContent = apt.num_bedrooms;
-                document.getElementById('apt-baths').textContent = apt.num_bathrooms;
-
-                const descBox = document.getElementById('apt-description');
-                if (apt.description) {
-                    descBox.textContent = apt.description;
-                    descBox.style.display = 'block';
-                } else { descBox.style.display = 'none'; }
-
-                const btnPay = document.getElementById('btn-pay');
-                const btnTour = document.getElementById('btn-tour');
-                const btnPlans = document.getElementById('btn-plans');
-
-                if (apt.status === 'Available') {
-                    btnPay.href = apt.payment_url;
-                    btnPay.textContent = "Reserve Unit";
-                    btnPay.className = "btn btn-reserve"; 
-                } else {
-                    btnPay.classList.add('disabled');
-                    btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
-                    btnPay.style.background = ''; 
-                }
-
-                if (apt.tour_url) {
-                    btnTour.style.display = 'block';
-                    btnTour.onclick = function() { openTour(apt.tour_url); };
-                }
-
-                sourceImages = apt.image || [];
-                sourcePlans = apt.plans || [];
-
-                if (sourcePlans.length > 0) {
-                    btnPlans.style.display = 'block';
-                }
-
-                loadGallery('images');
-
-                document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'flex';
+                // 2. Llenar el Dropdown
+                populateSelector(aid);
 
             } catch (err) {
                 console.error(err);
@@ -396,6 +372,121 @@
             }
         }
 
+        // --- LÓGICA DEL SELECTOR ---
+        function populateSelector(initialId) {
+            const selector = document.getElementById('unit-selector');
+            selector.innerHTML = ""; // Limpiar
+
+            // Ordenar por ID para que se vea bonito (opcional, requiere lógica extra si son alfanuméricos)
+            allUnitsData.sort((a, b) => a.fields.apartment_id.localeCompare(b.fields.apartment_id));
+
+            let foundInitial = false;
+
+            allUnitsData.forEach(record => {
+                const opt = document.createElement('option');
+                opt.value = record.fields.apartment_id; // El valor es el ID
+                // El texto es el NOMBRE (si existe) o el ID
+                opt.text = record.fields.name ? record.fields.name : `Unit ${record.fields.apartment_id}`;
+                selector.appendChild(opt);
+
+                if (record.fields.apartment_id === initialId) {
+                    selector.value = initialId;
+                    foundInitial = true;
+                    renderUnit(record); // Renderizar el inicial
+                }
+            });
+
+            // Si el ID de la URL no está en la lista (raro), renderizamos el primero
+            if (!foundInitial && allUnitsData.length > 0) {
+                selector.value = allUnitsData[0].fields.apartment_id;
+                renderUnit(allUnitsData[0]);
+            }
+
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+        }
+
+        // Esta función se llama cuando cambias el dropdown
+        function changeUnit(newId) {
+            const selectedRecord = allUnitsData.find(r => r.fields.apartment_id === newId);
+            if (selectedRecord) {
+                // Pequeño efecto de carga o transición si quieres, aquí es directo
+                renderUnit(selectedRecord);
+            }
+        }
+
+        // --- RENDERIZADO DE LA FICHA (Antes estaba en init) ---
+        function renderUnit(record) {
+            const apt = record.fields;
+            currentUnit = apt;
+
+            // Textos
+            const tituloDisplay = apt.name ? apt.name : `Unit ${apt.apartment_id}`;
+            document.getElementById('apt-name').textContent = tituloDisplay;
+            document.getElementById('apt-project').textContent = apt.project_name || '';
+            document.getElementById('apt-price').textContent = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(apt.price);
+            
+            // Badge
+            const statusContainer = document.getElementById('apt-status-container');
+            statusContainer.textContent = apt.status;
+            statusContainer.className = 'status-badge'; 
+            if (apt.status === 'Available') statusContainer.classList.add('badge-available');
+            else if (apt.status === 'Reserved') statusContainer.classList.add('badge-reserved');
+            else statusContainer.classList.add('badge-sold');
+
+            // Specs
+            document.getElementById('apt-area').textContent = apt.area_total || 0;
+            document.getElementById('apt-beds').textContent = apt.num_bedrooms || 0;
+            document.getElementById('apt-baths').textContent = apt.num_bathrooms || 0;
+
+            // Desc
+            const descBox = document.getElementById('apt-description');
+            if (apt.description) {
+                descBox.textContent = apt.description;
+                descBox.style.display = 'block';
+            } else { descBox.style.display = 'none'; }
+
+            // Botones
+            const btnPay = document.getElementById('btn-pay');
+            const btnTour = document.getElementById('btn-tour');
+            const btnPlans = document.getElementById('btn-plans');
+
+            // Resetear botones media
+            btnPlans.style.display = 'none';
+            btnTour.style.display = 'none';
+
+            // Estado Reserva
+            if (apt.status === 'Available') {
+                btnPay.href = apt.payment_url;
+                btnPay.textContent = "Reserve Unit";
+                btnPay.className = "btn btn-reserve"; 
+            } else {
+                btnPay.classList.add('disabled');
+                btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
+                btnPay.style.background = ''; 
+            }
+
+            // Tour
+            if (apt.tour_url) {
+                btnTour.style.display = 'block';
+                btnTour.onclick = function() { openTour(apt.tour_url); };
+            }
+
+            // Imágenes y Planos
+            sourceImages = apt.image || [];
+            sourcePlans = apt.plans || [];
+
+            if (sourcePlans.length > 0) {
+                btnPlans.style.display = 'block';
+            }
+
+            // Resetear vista a Galería (Siempre empezar en fotos al cambiar de unidad)
+            // IMPORTANTE: Resetear iframe si estaba abierto
+            closeTour(); 
+            loadGallery('images');
+        }
+
+        // --- RESTO DE FUNCIONES (Iguales) ---
         function loadGallery(type) {
             currentIndex = 0;
             const btnGallery = document.getElementById('btn-gallery');
