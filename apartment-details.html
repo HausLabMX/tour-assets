@@ -14,93 +14,85 @@
             --primary: #1a1a1a; 
             --text-gray: #6b7280;
             --bg-light: #f3f4f6;
-            
-            /* Botones */
-            --btn-reserve: #2563eb; 
-            --btn-reserve-hover: #1d4ed8;
-            --btn-media: #000000;   
-            --btn-tour: #f59e0b;    
-            --btn-tour-hover: #d97706;
-
-            /* Estados */
-            --status-green: #10b981;
-            --status-red: #ef4444;
-            --status-yellow: #f59e0b;
+            --btn-reserve: #2563eb; --btn-reserve-hover: #1d4ed8;
+            --btn-media: #000000; --btn-tour: #f59e0b; --btn-tour-hover: #d97706;
+            --status-green: #10b981; --status-red: #ef4444; --status-yellow: #f59e0b;
             --disabled-gray: #4b5563;
         }
         
         * { box-sizing: border-box; }
 
         body { 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 0; 
-            background-color: transparent; 
-            color: var(--primary); 
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0; 
+            background-color: transparent; color: var(--primary); 
             height: 100vh; overflow: hidden; 
         }
 
         .container { 
             display: flex; height: 100%; width: 100%;
             border-radius: 24px; overflow: hidden; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.25); 
-            background-color: #fff;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25); background-color: #fff;
         }
 
+        /* LOADERS */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 100; border-radius: 24px;
-            display: flex; justify-content: center; align-items: center;
-            flex-direction: column;
+            display: flex; justify-content: center; align-items: center; flexDirection: column;
         }
+        
+        /* Spinner pequeño para el carrusel */
+        #image-loader {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 5; display: none; /* Oculto por defecto */
+        }
+
         .spinner {
             width: 40px; height: 40px; border: 4px solid #f3f3f3;
             border-top: 4px solid var(--primary); border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 15px;
+            animation: spin 1s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        /* Animación para el spinner general que no tiene translate */
+        .spinner-main { animation: spinMain 1s linear infinite; }
+        @keyframes spinMain { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
 
         /* --- INFO (IZQUIERDA) --- */
         .info-panel {
-            width: 28%; 
-            padding: 40px 30px 60px 30px; 
+            width: 28%; padding: 40px 30px 70px 30px; 
             overflow-y: auto; background: white;
-            display: flex; flex-direction: column;
-            justify-content: center; 
-            border-right: 1px solid #eee; 
-            min-width: 350px; 
-            transition: transform 0.4s ease, opacity 0.4s ease;
-            z-index: 2;
+            display: flex; flex-direction: column; justify-content: center; 
+            border-right: 1px solid #eee; min-width: 350px; 
+            transition: transform 0.4s ease, opacity 0.4s ease; z-index: 2;
         }
         .info-panel.hidden { display: none; }
 
-        .info-content-wrapper { margin-bottom: 20px; }
+        .header-top { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .selector-label { font-size: 0.75rem; color: var(--text-gray); font-weight: 600; margin-bottom: 5px; display: block; }
 
-        /* HEADER & TITLE */
-        .header-row {
-            display: flex; justify-content: space-between;
-            align-items: flex-start; gap: 10px; margin-bottom: 5px;
+        #unit-selector {
+            width: 100%; padding: 10px 12px; font-family: 'Inter', sans-serif;
+            font-size: 1rem; font-weight: 600; color: var(--primary);
+            background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; cursor: pointer;
+            appearance: none; 
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 12px top 50%; background-size: 10px auto;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
+        #unit-selector:hover { border-color: #9ca3af; }
+        #unit-selector:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.1); }
 
-        h1 { 
-            margin: 0; 
-            /* CAMBIO: Tamaño duplicado */
-            font-size: 3.5rem; 
-            font-weight: 800; 
-            letter-spacing: -2px; 
-            line-height: 1; 
-            flex-grow: 1;
-        }
+        .info-content-wrapper { margin-bottom: 30px; }
+        .title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
         
-        h2 { margin: 5px 0 20px 0; font-size: 1rem; color: var(--text-gray); font-weight: 400; }
-        
+        h1 { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        h2 { margin: 5px 0 20px 0; font-size: 0.9rem; color: var(--text-gray); font-weight: 400; }
         .price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
 
-        /* SPECS GRID */
         .specs-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-            margin-bottom: 25px; padding-bottom: 25px; 
-            /* Quitamos el borde aquí porque ahora el selector hará de separador */
-            /* border-bottom: 1px solid #eee; */ 
+            margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee;
         }
         .spec-item { display: flex; flex-direction: column; }
         .spec-label { 
@@ -111,75 +103,31 @@
         .icon-svg { width: 16px; height: 16px; fill: var(--text-gray); }
         .spec-value { font-size: 1rem; font-weight: 600; }
 
-        /* SELECTOR (NUEVA POSICIÓN) */
-        .selector-container {
-            margin-bottom: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #eee; /* Separador visual */
-        }
-
-        .selector-label {
-            font-size: 0.7rem; color: var(--text-gray); 
-            font-weight: 700; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-
-        #unit-selector {
-            width: 100%;
-            padding: 12px 12px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--primary);
-            background-color: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            cursor: pointer;
-            appearance: none; 
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231a1a1a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px top 50%;
-            background-size: 10px auto;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        #unit-selector:hover { border-color: #9ca3af; }
-        #unit-selector:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.1); }
-
-        /* STATUS BADGE */
         .status-badge {
-            display: inline-block; padding: 5px 12px; border-radius: 50px;
-            font-size: 0.75rem; font-weight: 700; color: white;
+            display: inline-block; padding: 4px 10px; border-radius: 50px;
+            font-size: 0.65rem; font-weight: 700; color: white;
             text-transform: uppercase; letter-spacing: 0.5px;
-            white-space: nowrap; flex-shrink: 0; margin-top: 8px; /* Ajuste visual con titulo grande */
         }
         .badge-available { background-color: var(--status-green); }
         .badge-sold { background-color: var(--status-red); }
         .badge-reserved { background-color: var(--status-yellow); }
 
-        .description-box { margin-bottom: 20px; font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
+        .description-box { margin-bottom: 20px; font-size: 0.85rem; line-height: 1.5; color: #4b5563; }
 
-        /* --- BOTONES --- */
         .actions { display: flex; flex-direction: column; gap: 10px; }
-        
-        .media-buttons-row {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-        }
+        .media-buttons-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
         .btn {
             display: flex; justify-content: center; align-items: center;
-            padding: 14px; border-radius: 8px;
-            text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            padding: 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem;
             transition: all 0.2s; cursor: pointer; border: none; text-align: center;
         }
-
         .btn-reserve { background: var(--btn-reserve); color: white; width: 100%; }
         .btn-reserve:hover { background: var(--btn-reserve-hover); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
-        
         .btn-black { background: var(--btn-media); color: white; }
         .btn-black:hover { opacity: 0.8; transform: translateY(-1px); }
-        
         .btn-tour { background: var(--btn-tour); color: white; width: 100%; }
         .btn-tour:hover { background: var(--btn-tour-hover); transform: translateY(-2px); }
-
         .btn.disabled { background: var(--disabled-gray) !important; color: #ffffff !important; pointer-events: none; opacity: 0.8; }
         .btn-active { border: 2px solid white; box-shadow: 0 0 0 2px var(--primary); }
 
@@ -200,8 +148,7 @@
         }
 
         .tour-overlay {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 20; display: none; 
         }
         iframe { width: 100%; height: 100%; border: none; }
@@ -229,6 +176,8 @@
             transition: transform 0.2s, background 0.2s; 
             font-size: 1.2rem; pointer-events: auto;
         }
+        /* Clase para deshabilitar botón mientras carga */
+        .nav-btn.locked { opacity: 0.5; pointer-events: none; cursor: wait; }
         .nav-btn:hover { transform: scale(1.1); background: white; }
 
         .image-counter {
@@ -253,64 +202,35 @@
 <body>
 
     <div id="loading-screen">
-        <div class="spinner"></div>
-        <div style="color: #666; font-size: 0.9rem;">Loading inventory...</div>
+        <div class="spinner spinner-main"></div>
+        <div style="color: #666; font-size: 0.9rem; margin-top: 10px;">Loading inventory...</div>
     </div>
 
     <div class="container" id="main-content" style="display:none;">
         
-        <!-- PANEL IZQUIERDO: INFO -->
+        <!-- INFO -->
         <div class="info-panel" id="panel-info">
-            
+            <div class="header-top">
+                <label class="selector-label">SELECT UNIT</label>
+                <select id="unit-selector" onchange="changeUnit(this.value)"></select>
+            </div>
+
             <div class="info-content-wrapper">
-                
-                <!-- Titulo y Status -->
-                <div class="header-row">
+                <div class="title-row">
                     <h1 id="apt-name">Unit ...</h1>
                     <span id="apt-status-container">...</span>
                 </div>
-
                 <h2 id="apt-project">Project ...</h2>
                 <div class="price" id="apt-price">$...</div>
 
-                <!-- Specs -->
                 <div class="specs-grid">
-                    <div class="spec-item">
-                        <span class="spec-label">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3ZM3 5H21V19H3V5ZM5 7V9H7V7H5ZM9 7V9H11V7H9ZM13 7V9H15V7H13ZM5 11V13H7V11H5ZM9 11V13H11V11H9ZM5 15V17H7V15H5Z"/></svg>
-                            Area
-                        </span>
-                        <span class="spec-value"><span id="apt-area">0</span> m²</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 10V7C20 5.34315 18.6569 4 17 4H7C5.34315 4 4 5.34315 4 7V10C2.34315 10 1 11.3431 1 13V19H3V21H5V19H19V21H21V19H23V13C23 11.3431 21.6569 10 20 10ZM7 6H17C17.5523 6 18 6.44772 18 7V10H6V7C6 6.44772 6.44772 6 7 6ZM21 17H3V13C3 12.4477 3.44772 12 4 12H20C20.5523 12 21 12.4477 21 13V17Z"/></svg>
-                            Bedrooms
-                        </span>
-                        <span class="spec-value" id="apt-beds">0</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 17c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.5 9.5h13c.28 0 .5-.22.5-.5 0-1.65-1.35-3-3-3h-2V2H9v4H7c-1.65 0-3 1.35-3 3 0 .28.22.5.5.5zM5 11h14v1H5z"/></svg>
-                            Bathrooms
-                        </span>
-                        <span class="spec-value" id="apt-baths">0</span>
-                    </div>
+                    <div class="spec-item"><span class="spec-label"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3ZM3 5H21V19H3V5ZM5 7V9H7V7H5ZM9 7V9H11V7H9ZM13 7V9H15V7H13ZM5 11V13H7V11H5ZM9 11V13H11V11H9ZM5 15V17H7V15H5Z"/></svg>Area</span><span class="spec-value"><span id="apt-area">0</span> m²</span></div>
+                    <div class="spec-item"><span class="spec-label"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 10V7C20 5.34315 18.6569 4 17 4H7C5.34315 4 4 5.34315 4 7V10C2.34315 10 1 11.3431 1 13V19H3V21H5V19H19V21H21V19H23V13C23 11.3431 21.6569 10 20 10ZM7 6H17C17.5523 6 18 6.44772 18 7V10H6V7C6 6.44772 6.44772 6 7 6ZM21 17H3V13C3 12.4477 3.44772 12 4 12H20C20.5523 12 21 12.4477 21 13V17Z"/></svg>Bedrooms</span><span class="spec-value" id="apt-beds">0</span></div>
+                    <div class="spec-item"><span class="spec-label"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 17c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.5 9.5h13c.28 0 .5-.22.5-.5 0-1.65-1.35-3-3-3h-2V2H9v4H7c-1.65 0-3 1.35-3 3 0 .28.22.5.5.5zM5 11h14v1H5z"/></svg>Bathrooms</span><span class="spec-value" id="apt-baths">0</span></div>
                 </div>
-
-                <!-- SELECTOR (Reubicado Aquí) -->
-                <div class="selector-container">
-                    <label class="selector-label">CHANGE UNIT</label>
-                    <select id="unit-selector" onchange="changeUnit(this.value)">
-                        <!-- Se llena con JS -->
-                    </select>
-                </div>
-
-                <!-- Descripción -->
                 <div id="apt-description" class="description-box" style="display: none;"></div>
             </div>
 
-            <!-- Botones -->
             <div class="actions">
                 <div class="media-buttons-row">
                     <button id="btn-gallery" class="btn btn-black" onclick="loadGallery('images')">Gallery</button>
@@ -321,16 +241,19 @@
             </div>
         </div>
 
-        <!-- PANEL DERECHO: MEDIA -->
+        <!-- MEDIA -->
         <div class="image-panel" id="panel-media">
             <div id="photos-container">
+                <!-- Spinner local para las fotos -->
+                <div id="image-loader" style="display:none;"><div class="spinner"></div></div>
+                
                 <img id="carousel-img" src="" alt="Vista Departamento">
                 <div class="image-counter">
                     <span id="current-slide">1</span> / <span id="total-slides">1</span>
                 </div>
                 <div class="carousel-nav" id="nav-controls">
-                    <button class="nav-btn" onclick="changeImage(-1)">❮</button>
-                    <button class="nav-btn" onclick="changeImage(1)">❯</button>
+                    <button class="nav-btn" id="prev-btn" onclick="changeImage(-1)">❮</button>
+                    <button class="nav-btn" id="next-btn" onclick="changeImage(1)">❯</button>
                 </div>
             </div>
 
@@ -350,24 +273,20 @@
         const TABLE_NAME = 'Isa Reserve';
 
         let allUnitsData = [];
-        let currentUnit = {};
-        
         let activeImages = [];
         let sourceImages = [];
         let sourcePlans = [];
         let currentIndex = 0;
+        
+        // Bloqueo de animación
+        let isAnimating = false;
 
         function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
 
         async function init() {
             const pid = getParam('project');
             const aid = getParam('id');
-
-            let filter = '';
-            if (pid) {
-                filter = `?filterByFormula={project_id}='${pid}'`;
-            }
-
+            let filter = pid ? `?filterByFormula={project_id}='${pid}'` : '';
             const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}${filter}`;
 
             try {
@@ -377,7 +296,6 @@
                 if (!data.records || data.records.length === 0) throw new Error("No data found");
                 
                 allUnitsData = data.records;
-
                 allUnitsData.sort((a, b) => {
                     return a.fields.apartment_id.localeCompare(b.fields.apartment_id, undefined, {numeric: true, sensitivity: 'base'});
                 });
@@ -394,7 +312,6 @@
         function populateSelector(initialId) {
             const selector = document.getElementById('unit-selector');
             selector.innerHTML = ""; 
-
             let foundInitial = false;
 
             allUnitsData.forEach(record => {
@@ -421,15 +338,12 @@
 
         function changeUnit(newId) {
             const selectedRecord = allUnitsData.find(r => String(r.fields.apartment_id) === String(newId));
-            if (selectedRecord) {
-                renderUnit(selectedRecord);
-            }
+            if (selectedRecord) renderUnit(selectedRecord);
         }
 
         function renderUnit(record) {
             const apt = record.fields;
-            currentUnit = apt;
-
+            
             const tituloDisplay = apt.name ? apt.name : `Unit ${apt.apartment_id}`;
             document.getElementById('apt-name').textContent = tituloDisplay;
             document.getElementById('apt-project').textContent = apt.project_name || '';
@@ -477,9 +391,7 @@
             sourceImages = apt.image || [];
             sourcePlans = apt.plans || [];
 
-            if (sourcePlans.length > 0) {
-                btnPlans.style.display = 'block';
-            }
+            if (sourcePlans.length > 0) btnPlans.style.display = 'block';
 
             closeTour(); 
             loadGallery('images');
@@ -533,28 +445,81 @@
             tourFrame.src = "";
         }
 
+        // --- SISTEMA ANTI-LAG ---
         function changeImage(direction) {
+            if (isAnimating) return; // Bloquear si ya está moviéndose
+            
             currentIndex += direction;
             if (currentIndex >= activeImages.length) currentIndex = 0;
             if (currentIndex < 0) currentIndex = activeImages.length - 1;
+            
             updateCarousel(currentIndex);
         }
 
         function updateCarousel(index) {
+            isAnimating = true; // Bloqueo activado
+            
             const imgElement = document.getElementById('carousel-img');
             const photoData = activeImages[index];
             const anchoPantalla = window.innerWidth;
+            const loader = document.getElementById('image-loader');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+
+            // Determinar mejor URL
             let imageUrl = photoData.url;
             if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
                 imageUrl = photoData.thumbnails.large.url;
-            } 
-            imgElement.style.opacity = 0;
-            setTimeout(() => {
+            } else if (photoData.thumbnails && photoData.thumbnails.full) {
+                imageUrl = photoData.thumbnails.full.url; // Preferimos Full sobre original para velocidad
+            }
+
+            // UI Feedback
+            imgElement.style.opacity = 0.5; // Atenuar imagen vieja
+            loader.style.display = 'block'; // Mostrar spinner
+            nextBtn.classList.add('locked'); // Desactivar flechas
+            prevBtn.classList.add('locked');
+
+            // Cargar imagen en segundo plano
+            const tempImg = new Image();
+            tempImg.src = imageUrl;
+            
+            tempImg.onload = function() {
                 imgElement.src = imageUrl;
                 imgElement.style.opacity = 1;
-            }, 200);
-            document.getElementById('current-slide').textContent = index + 1;
-            document.getElementById('total-slides').textContent = activeImages.length;
+                
+                // Actualizar contadores
+                document.getElementById('current-slide').textContent = index + 1;
+                document.getElementById('total-slides').textContent = activeImages.length;
+                
+                // Desbloquear
+                loader.style.display = 'none';
+                nextBtn.classList.remove('locked');
+                prevBtn.classList.remove('locked');
+                isAnimating = false;
+
+                // Precargar siguiente (Silencioso)
+                preloadNext(index + 1);
+            };
+
+            tempImg.onerror = function() {
+                isAnimating = false; // Desbloquear si falla
+                loader.style.display = 'none';
+            }
+        }
+
+        function preloadNext(nextIdx) {
+            if (nextIdx >= activeImages.length) nextIdx = 0;
+            const photoData = activeImages[nextIdx];
+            if (!photoData) return;
+            
+            const anchoPantalla = window.innerWidth;
+            let url = photoData.url;
+            if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
+                url = photoData.thumbnails.large.url;
+            }
+            const p = new Image();
+            p.src = url; // El navegador lo guarda en caché
         }
 
         init();
