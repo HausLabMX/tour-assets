@@ -34,17 +34,15 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.25); background-color: #fff;
         }
 
-        /* LOADERS */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: white; z-index: 100; border-radius: 24px;
             display: flex; justify-content: center; align-items: center; flexDirection: column;
         }
         
-        /* Spinner pequeño para el carrusel */
         #image-loader {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 5; display: none; /* Oculto por defecto */
+            z-index: 5; display: none; 
         }
 
         .spinner {
@@ -53,10 +51,8 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-        /* Animación para el spinner general que no tiene translate */
         .spinner-main { animation: spinMain 1s linear infinite; }
         @keyframes spinMain { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
 
         /* --- INFO (IZQUIERDA) --- */
         .info-panel {
@@ -86,7 +82,7 @@
         .info-content-wrapper { margin-bottom: 30px; }
         .title-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
         
-        h1 { margin: 0; font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        h1 { margin: 0; font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; line-height: 1; flex-grow: 1; }
         h2 { margin: 5px 0 20px 0; font-size: 0.9rem; color: var(--text-gray); font-weight: 400; }
         .price { font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
 
@@ -176,7 +172,6 @@
             transition: transform 0.2s, background 0.2s; 
             font-size: 1.2rem; pointer-events: auto;
         }
-        /* Clase para deshabilitar botón mientras carga */
         .nav-btn.locked { opacity: 0.5; pointer-events: none; cursor: wait; }
         .nav-btn:hover { transform: scale(1.1); background: white; }
 
@@ -226,7 +221,7 @@
                 <div class="specs-grid">
                     <div class="spec-item"><span class="spec-label"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3C1.89543 3 1 3.89543 1 5V19C1 20.1046 1.89543 21 3 21H21C22.1046 21 23 20.1046 23 19V5C23 3.89543 22.1046 3 21 3ZM3 5H21V19H3V5ZM5 7V9H7V7H5ZM9 7V9H11V7H9ZM13 7V9H15V7H13ZM5 11V13H7V11H5ZM9 11V13H11V11H9ZM5 15V17H7V15H5Z"/></svg>Area</span><span class="spec-value"><span id="apt-area">0</span> m²</span></div>
                     <div class="spec-item"><span class="spec-label"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 10V7C20 5.34315 18.6569 4 17 4H7C5.34315 4 4 5.34315 4 7V10C2.34315 10 1 11.3431 1 13V19H3V21H5V19H19V21H21V19H23V13C23 11.3431 21.6569 10 20 10ZM7 6H17C17.5523 6 18 6.44772 18 7V10H6V7C6 6.44772 6.44772 6 7 6ZM21 17H3V13C3 12.4477 3.44772 12 4 12H20C20.5523 12 21 12.4477 21 13V17Z"/></svg>Bedrooms</span><span class="spec-value" id="apt-beds">0</span></div>
-                    <div class="spec-item"><span class="spec-label"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 17c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.5 9.5h13c.28 0 .5-.22.5-.5 0-1.65-1.35-3-3-3h-2V2H9v4H7c-1.65 0-3 1.35-3 3 0 .28.22.5.5.5zM5 11h14v1H5z"/></svg>Bathrooms</span><span class="spec-value" id="apt-baths">0</span></div>
+                    <div class="spec-item"><span class="spec-label"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M8 17c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm4 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM5.5 9.5h13c.28 0 .5-.22.5-.5 0-1.65-1.35-3-3-3h-2V2H9v4H7c-1.65 0-3 1.35-3 3 0 .28.22.5.5.5zM5 11h14v1H5z"/></svg>Bathrooms</span><span class="spec-value" id="apt-baths">0</span></div>
                 </div>
                 <div id="apt-description" class="description-box" style="display: none;"></div>
             </div>
@@ -244,7 +239,7 @@
         <!-- MEDIA -->
         <div class="image-panel" id="panel-media">
             <div id="photos-container">
-                <!-- Spinner local para las fotos -->
+                <!-- Spinner local -->
                 <div id="image-loader" style="display:none;"><div class="spinner"></div></div>
                 
                 <img id="carousel-img" src="" alt="Vista Departamento">
@@ -252,8 +247,9 @@
                     <span id="current-slide">1</span> / <span id="total-slides">1</span>
                 </div>
                 <div class="carousel-nav" id="nav-controls">
-                    <button class="nav-btn" id="prev-btn" onclick="changeImage(-1)">❮</button>
-                    <button class="nav-btn" id="next-btn" onclick="changeImage(1)">❯</button>
+                    <!-- Evento onclick: se le pasa 'true' para indicar que es manual -->
+                    <button class="nav-btn" id="prev-btn" onclick="changeImage(-1, true)">❮</button>
+                    <button class="nav-btn" id="next-btn" onclick="changeImage(1, true)">❯</button>
                 </div>
             </div>
 
@@ -278,10 +274,27 @@
         let sourcePlans = [];
         let currentIndex = 0;
         
-        // Bloqueo de animación
         let isAnimating = false;
+        let autoPlayTimer = null; // Variable del temporizador
 
         function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
+
+        // --- LÓGICA DE AUTOPLAY ---
+        function startAutoPlay() {
+            stopAutoPlay(); // Limpiar por seguridad
+            // Cambio automático cada 4 segundos
+            autoPlayTimer = setInterval(() => {
+                // Llamada automática (isManual = false)
+                changeImage(1); 
+            }, 4000);
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+            }
+        }
 
         async function init() {
             const pid = getParam('project');
@@ -393,7 +406,7 @@
 
             if (sourcePlans.length > 0) btnPlans.style.display = 'block';
 
-            closeTour(); 
+            closeTour(); // Asegura cerrar tour previo y reiniciar autoplay
             loadGallery('images');
         }
 
@@ -417,13 +430,19 @@
                 updateCarousel(0);
                 document.getElementById('nav-controls').style.display = (activeImages.length > 1) ? 'flex' : 'none';
                 document.getElementById('carousel-img').style.display = 'block';
+                
+                // Reiniciamos Autoplay al cambiar de galería
+                startAutoPlay();
             } else {
                 document.getElementById('carousel-img').src = 'https://via.placeholder.com/800x600?text=No+Image';
                 document.getElementById('nav-controls').style.display = 'none';
+                stopAutoPlay();
             }
         }
 
         function openTour(url) {
+            stopAutoPlay(); // Detener carrusel al abrir tour
+            
             const tourContainer = document.getElementById('tour-container');
             const tourFrame = document.getElementById('tour-frame');
             const infoPanel = document.getElementById('panel-info');
@@ -443,11 +462,19 @@
             infoPanel.style.display = 'flex';
             tourContainer.style.display = 'none';
             tourFrame.src = "";
+            
+            startAutoPlay(); // Reiniciar carrusel al cerrar tour
         }
 
-        // --- SISTEMA ANTI-LAG ---
-        function changeImage(direction) {
-            if (isAnimating) return; // Bloquear si ya está moviéndose
+        // Modificamos para aceptar parámetro isManual
+        function changeImage(direction, isManual = false) {
+            if (isAnimating) return; 
+            
+            // Si el usuario toca la flecha, reiniciamos el contador de 4s
+            if (isManual) {
+                stopAutoPlay();
+                startAutoPlay();
+            }
             
             currentIndex += direction;
             if (currentIndex >= activeImages.length) currentIndex = 0;
@@ -457,7 +484,7 @@
         }
 
         function updateCarousel(index) {
-            isAnimating = true; // Bloqueo activado
+            isAnimating = true; 
             
             const imgElement = document.getElementById('carousel-img');
             const photoData = activeImages[index];
@@ -466,21 +493,18 @@
             const nextBtn = document.getElementById('next-btn');
             const prevBtn = document.getElementById('prev-btn');
 
-            // Determinar mejor URL
             let imageUrl = photoData.url;
             if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
                 imageUrl = photoData.thumbnails.large.url;
             } else if (photoData.thumbnails && photoData.thumbnails.full) {
-                imageUrl = photoData.thumbnails.full.url; // Preferimos Full sobre original para velocidad
+                imageUrl = photoData.thumbnails.full.url; 
             }
 
-            // UI Feedback
-            imgElement.style.opacity = 0.5; // Atenuar imagen vieja
-            loader.style.display = 'block'; // Mostrar spinner
-            nextBtn.classList.add('locked'); // Desactivar flechas
+            imgElement.style.opacity = 0.5; 
+            loader.style.display = 'block'; 
+            nextBtn.classList.add('locked'); 
             prevBtn.classList.add('locked');
 
-            // Cargar imagen en segundo plano
             const tempImg = new Image();
             tempImg.src = imageUrl;
             
@@ -488,22 +512,19 @@
                 imgElement.src = imageUrl;
                 imgElement.style.opacity = 1;
                 
-                // Actualizar contadores
                 document.getElementById('current-slide').textContent = index + 1;
                 document.getElementById('total-slides').textContent = activeImages.length;
                 
-                // Desbloquear
                 loader.style.display = 'none';
                 nextBtn.classList.remove('locked');
                 prevBtn.classList.remove('locked');
                 isAnimating = false;
 
-                // Precargar siguiente (Silencioso)
                 preloadNext(index + 1);
             };
 
             tempImg.onerror = function() {
-                isAnimating = false; // Desbloquear si falla
+                isAnimating = false; 
                 loader.style.display = 'none';
             }
         }
@@ -519,7 +540,7 @@
                 url = photoData.thumbnails.large.url;
             }
             const p = new Image();
-            p.src = url; // El navegador lo guarda en caché
+            p.src = url; 
         }
 
         init();
