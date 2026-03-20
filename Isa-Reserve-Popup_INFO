@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Proyecto</title>
+    
+    <link rel="preconnect" href="https://api.airtable.com">
+    <link rel="preconnect" href="https://dl.airtable.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #1a1a1a; 
+            --text-gray: #6b7280;
+            --bg-light: #f3f4f6;
+            --btn-gray: #e5e7eb;
+            --btn-gray-hover: #d1d5db;
+        }
+        
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Inter', sans-serif; margin: 0; padding: 0; 
+            background-color: transparent; color: var(--primary); 
+            height: 100vh; overflow: hidden; 
+        }
+
+        .container { 
+            display: flex; height: 100%; width: 100%;
+            border-radius: 24px; overflow: hidden; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25); background-color: #fff;
+        }
+
+        /* LOADER */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 100; border-radius: 24px;
+            display: flex; justify-content: center; align-items: center; flex-direction: column;
+        }
+        
+        #image-loader {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 5; display: none; 
+        }
+
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        .spinner-main { animation: spinMain 1s linear infinite; }
+        @keyframes spinMain { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- INFO (IZQUIERDA) --- */
+        .info-panel {
+            width: 35%; /* Ligeramente más ancho para lectura cómoda */
+            padding: 50px 40px; 
+            overflow-y: auto; background: white;
+            display: flex; flex-direction: column; justify-content: center; 
+            border-right: 1px solid #eee; min-width: 350px; 
+            z-index: 2;
+        }
+
+        h1 { 
+            margin: 0 0 20px 0; font-size: 2.5rem; font-weight: 800; 
+            letter-spacing: -1px; line-height: 1.1; 
+        }
+        
+        .description-box { 
+            margin-bottom: 30px; font-size: 1rem; line-height: 1.6; color: #4b5563; 
+        }
+
+        .actions { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+
+        .btn {
+            display: flex; justify-content: center; align-items: center;
+            padding: 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem;
+            transition: all 0.2s; cursor: pointer; border: none; text-align: center;
+        }
+        
+        /* Botón Gris */
+        .btn-gray { background: var(--btn-gray); color: var(--primary); width: 100%; }
+        .btn-gray:hover { background: var(--btn-gray-hover); transform: translateY(-2px); }
+
+        /* --- MEDIA (DERECHA) --- */
+        .image-panel {
+            width: 65%; background: var(--bg-light);
+            position: relative; overflow: hidden; display: flex;
+        }
+
+        #photos-container { width: 100%; height: 100%; position: relative; }
+
+        #carousel-img {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center center;
+            transition: opacity 0.3s ease; display: block;
+        }
+
+        .carousel-nav {
+            position: absolute; top: 50%; left: 0; width: 100%;
+            transform: translateY(-50%); display: flex; justify-content: space-between;
+            padding: 0 20px; pointer-events: none; z-index: 10;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9); border: none; 
+            width: 50px; height: 50px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background 0.2s; 
+            font-size: 1.2rem; pointer-events: auto;
+        }
+        .nav-btn.locked { opacity: 0.5; pointer-events: none; cursor: wait; }
+        .nav-btn:hover { transform: scale(1.1); background: white; }
+
+        .image-counter {
+            position: absolute; top: 25px; right: 25px;
+            background: rgba(0,0,0,0.6); color: white;
+            padding: 6px 14px; border-radius: 20px;
+            font-size: 0.8rem; font-weight: 600; backdrop-filter: blur(4px);
+        }
+
+        @media (max-width: 900px) {
+            .container { flex-direction: column-reverse; border-radius: 0; }
+            #loading-screen { border-radius: 0; }
+            .image-panel { width: 100%; height: 40%; }
+            .info-panel { width: 100%; height: 60%; padding: 30px; justify-content: flex-start; }
+            .carousel-nav { padding: 0 10px; }
+            .nav-btn { width: 40px; height: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="spinner spinner-main"></div>
+        <div style="color: #666; font-size: 0.9rem; margin-top: 10px;">Cargando información...</div>
+    </div>
+
+    <div class="container" id="main-content" style="display:none;">
+        
+        <!-- INFO -->
+        <div class="info-panel" id="panel-info">
+            
+            <h1 id="apt-name">Cargando...</h1>
+            
+            <div id="apt-description" class="description-box" style="display: none;"></div>
+
+            <div class="actions">
+                <a href="#" id="btn-tour" class="btn btn-gray" target="_blank" style="display: none;">Ver Más</a>
+            </div>
+        </div>
+
+        <!-- MEDIA -->
+        <div class="image-panel" id="panel-media">
+            <div id="photos-container">
+                <div id="image-loader" style="display:none;"><div class="spinner"></div></div>
+                
+                <img id="carousel-img" src="" alt="Imagen del Proyecto">
+                
+                <div class="image-counter">
+                    <span id="current-slide">1</span> / <span id="total-slides">1</span>
+                </div>
+                
+                <div class="carousel-nav" id="nav-controls">
+                    <button class="nav-btn" id="prev-btn" onclick="changeImage(-1, true)">❮</button>
+                    <button class="nav-btn" id="next-btn" onclick="changeImage(1, true)">❯</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="error-msg" style="display:none; text-align:center; padding:50px;">Error al cargar datos.</div>
+
+    <script>
+        const AIRTABLE_TOKEN = 'patLtwhe1uThg13Zi.a7a0336579f1cc184e29b7593bb98a41fdad9fe5f82e1d68923580c94c539716'; 
+        const BASE_ID = 'appCHPUOlD0TawvoJ';
+        const TABLE_NAME = 'Isa Reserve';
+
+        let activeImages = [];
+        let currentIndex = 0;
+        
+        let isAnimating = false;
+        let autoPlayTimer = null;
+
+        function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
+
+        function startAutoPlay() {
+            stopAutoPlay();
+            autoPlayTimer = setInterval(() => {
+                changeImage(1); 
+            }, 4000);
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+            }
+        }
+
+        async function init() {
+            const aid = getParam('id');
+
+            if (!aid) {
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('error-msg').textContent = "Error: ID no especificado.";
+                document.getElementById('error-msg').style.display = 'block';
+                return;
+            }
+
+            const filter = `{apartment_id}='${aid}'`;
+            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?filterByFormula=${encodeURIComponent(filter)}`;
+
+            try {
+                const response = await fetch(url, { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } });
+                const data = await response.json();
+                
+                if (!data.records || data.records.length === 0) throw new Error("No data found");
+                
+                renderUnit(data.records[0]);
+
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'flex';
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        function renderUnit(record) {
+            const apt = record.fields;
+            
+            // Título (Columna Name)
+            document.getElementById('apt-name').textContent = apt.name || `Unidad ${apt.apartment_id}`;
+
+            // Descripción
+            const descBox = document.getElementById('apt-description');
+            if (apt.description) {
+                descBox.textContent = apt.description;
+                descBox.style.display = 'block';
+            } else { 
+                descBox.style.display = 'none'; 
+            }
+
+            // Botón URL Externa (Gris, texto negro)
+            const btnTour = document.getElementById('btn-tour');
+            if (apt.tour_url) {
+                btnTour.href = apt.tour_url;
+                btnTour.style.display = 'flex';
+            } else {
+                btnTour.style.display = 'none';
+            }
+
+            // Carrusel de Imágenes
+            activeImages = apt.image || [];
+
+            if (activeImages.length > 0) {
+                updateCarousel(0);
+                document.getElementById('nav-controls').style.display = (activeImages.length > 1) ? 'flex' : 'none';
+                document.getElementById('carousel-img').style.display = 'block';
+                startAutoPlay();
+            } else {
+                document.getElementById('carousel-img').src = 'https://via.placeholder.com/800x600?text=No+Image';
+                document.getElementById('nav-controls').style.display = 'none';
+                stopAutoPlay();
+            }
+        }
+
+        function changeImage(direction, isManual = false) {
+            if (isAnimating) return; 
+            
+            if (isManual) {
+                stopAutoPlay();
+                startAutoPlay();
+            }
+            
+            currentIndex += direction;
+            if (currentIndex >= activeImages.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = activeImages.length - 1;
+            
+            updateCarousel(currentIndex);
+        }
+
+        function updateCarousel(index) {
+            isAnimating = true; 
+            
+            const imgElement = document.getElementById('carousel-img');
+            const photoData = activeImages[index];
+            const anchoPantalla = window.innerWidth;
+            const loader = document.getElementById('image-loader');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+
+            let imageUrl = photoData.url;
+            if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
+                imageUrl = photoData.thumbnails.large.url;
+            } else if (photoData.thumbnails && photoData.thumbnails.full) {
+                imageUrl = photoData.thumbnails.full.url; 
+            }
+
+            imgElement.style.opacity = 0.5; 
+            loader.style.display = 'block'; 
+            nextBtn.classList.add('locked'); 
+            prevBtn.classList.add('locked');
+
+            const tempImg = new Image();
+            tempImg.src = imageUrl;
+            
+            tempImg.onload = function() {
+                imgElement.src = imageUrl;
+                imgElement.style.opacity = 1;
+                document.getElementById('current-slide').textContent = index + 1;
+                document.getElementById('total-slides').textContent = activeImages.length;
+                loader.style.display = 'none';
+                nextBtn.classList.remove('locked');
+                prevBtn.classList.remove('locked');
+                isAnimating = false;
+                preloadNext(index + 1);
+            };
+
+            tempImg.onerror = function() {
+                isAnimating = false; 
+                loader.style.display = 'none';
+            }
+        }
+
+        function preloadNext(nextIdx) {
+            if (nextIdx >= activeImages.length) nextIdx = 0;
+            const photoData = activeImages[nextIdx];
+            if (!photoData) return;
+            const anchoPantalla = window.innerWidth;
+            let url = photoData.url;
+            if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
+                url = photoData.thumbnails.large.url;
+            }
+            const p = new Image();
+            p.src = url; 
+        }
+
+        init();
+    </script>
+</body>
+</html>
