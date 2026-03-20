@@ -320,4 +320,179 @@
             statusContainer.className = 'status-badge'; 
             if (apt.status === 'Available') statusContainer.classList.add('badge-available');
             else if (apt.status === 'Reserved') statusContainer.classList.add('badge-reserved');
-            else statusContain
+            else statusContainer.classList.add('badge-sold');
+
+            document.getElementById('apt-area').textContent = apt.area_total || 0;
+            document.getElementById('apt-beds').textContent = apt.num_bedrooms || 0;
+            document.getElementById('apt-baths').textContent = apt.num_bathrooms || 0;
+
+            const descBox = document.getElementById('apt-description');
+            if (apt.description) {
+                descBox.textContent = apt.description;
+                descBox.style.display = 'block';
+            } else { descBox.style.display = 'none'; }
+
+            const btnPay = document.getElementById('btn-pay');
+            const btnTour = document.getElementById('btn-tour');
+            const btnPlans = document.getElementById('btn-plans');
+
+            btnPlans.style.display = 'none';
+            btnTour.style.display = 'none';
+
+            if (apt.status === 'Available') {
+                btnPay.href = apt.payment_url;
+                btnPay.textContent = "Reserve Unit";
+                btnPay.className = "btn btn-reserve"; 
+            } else {
+                btnPay.classList.add('disabled');
+                btnPay.textContent = apt.status === 'Reserved' ? "Reserved" : "Sold";
+                btnPay.style.background = ''; 
+            }
+
+            if (apt.tour_url) {
+                btnTour.style.display = 'block';
+                btnTour.onclick = function() { openTour(apt.tour_url); };
+            }
+
+            sourceImages = apt.image || [];
+            sourcePlans = apt.plans || [];
+
+            if (sourcePlans.length > 0) btnPlans.style.display = 'block';
+
+            closeTour(); 
+            loadGallery('images'); 
+        }
+
+        function loadGallery(type) {
+            currentIndex = 0;
+            currentGalleryType = type;
+
+            const btnGallery = document.getElementById('btn-gallery');
+            const btnPlans = document.getElementById('btn-plans');
+
+            btnGallery.classList.remove('btn-active');
+            btnPlans.classList.remove('btn-active');
+
+            if (type === 'images') {
+                activeImages = sourceImages;
+                btnGallery.classList.add('btn-active');
+                startAutoPlay();
+            } else {
+                activeImages = sourcePlans;
+                btnPlans.classList.add('btn-active');
+                stopAutoPlay();
+            }
+
+            if (activeImages.length > 0) {
+                updateCarousel(0);
+                document.getElementById('nav-controls').style.display = (activeImages.length > 1) ? 'flex' : 'none';
+                document.getElementById('carousel-img').style.display = 'block';
+            } else {
+                document.getElementById('carousel-img').src = 'https://via.placeholder.com/800x600?text=No+Image';
+                document.getElementById('nav-controls').style.display = 'none';
+                stopAutoPlay(); 
+            }
+        }
+
+        function openTour(url) {
+            stopAutoPlay(); 
+            
+            const tourContainer = document.getElementById('tour-container');
+            const tourFrame = document.getElementById('tour-frame');
+            const infoPanel = document.getElementById('panel-info');
+            const mediaPanel = document.getElementById('panel-media');
+            infoPanel.style.display = 'none';
+            mediaPanel.classList.add('full-screen');
+            tourFrame.src = url;
+            tourContainer.style.display = 'block';
+        }
+
+        function closeTour() {
+            const tourContainer = document.getElementById('tour-container');
+            const tourFrame = document.getElementById('tour-frame');
+            const infoPanel = document.getElementById('panel-info');
+            const mediaPanel = document.getElementById('panel-media');
+            mediaPanel.classList.remove('full-screen');
+            infoPanel.style.display = 'flex';
+            tourContainer.style.display = 'none';
+            tourFrame.src = "";
+            
+            if (currentGalleryType === 'images') startAutoPlay();
+        }
+
+        function changeImage(direction, isManual = false) {
+            if (isAnimating) return; 
+            
+            if (isManual && currentGalleryType === 'images') {
+                stopAutoPlay();
+                startAutoPlay();
+            }
+            
+            currentIndex += direction;
+            if (currentIndex >= activeImages.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = activeImages.length - 1;
+            
+            updateCarousel(currentIndex);
+        }
+
+        function updateCarousel(index) {
+            isAnimating = true; 
+            
+            const imgElement = document.getElementById('carousel-img');
+            const photoData = activeImages[index];
+            const anchoPantalla = window.innerWidth;
+            const loader = document.getElementById('image-loader');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+
+            let imageUrl = photoData.url;
+            if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
+                imageUrl = photoData.thumbnails.large.url;
+            } else if (photoData.thumbnails && photoData.thumbnails.full) {
+                imageUrl = photoData.thumbnails.full.url; 
+            }
+
+            imgElement.style.opacity = 0.5; 
+            loader.style.display = 'block'; 
+            nextBtn.classList.add('locked'); 
+            prevBtn.classList.add('locked');
+
+            const tempImg = new Image();
+            tempImg.src = imageUrl;
+            
+            tempImg.onload = function() {
+                imgElement.src = imageUrl;
+                imgElement.style.opacity = 1;
+                document.getElementById('current-slide').textContent = index + 1;
+                document.getElementById('total-slides').textContent = activeImages.length;
+                loader.style.display = 'none';
+                nextBtn.classList.remove('locked');
+                prevBtn.classList.remove('locked');
+                isAnimating = false;
+                preloadNext(index + 1);
+            };
+
+            tempImg.onerror = function() {
+                isAnimating = false; 
+                loader.style.display = 'none';
+            }
+        }
+
+        function preloadNext(nextIdx) {
+            if (nextIdx >= activeImages.length) nextIdx = 0;
+            const photoData = activeImages[nextIdx];
+            if (!photoData) return;
+            const anchoPantalla = window.innerWidth;
+            let url = photoData.url;
+            if (anchoPantalla < 1024 && photoData.thumbnails && photoData.thumbnails.large) {
+                url = photoData.thumbnails.large.url;
+            }
+            const p = new Image();
+            p.src = url; 
+        }
+
+        // Arrancar
+        init();
+    </script>
+</body>
+</html>
